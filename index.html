@@ -344,7 +344,7 @@
 
     // פונקציות המודאל
     function openModal(gid) {
-        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/htmlembed?gid=${gid}&range=A1:E20`;
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/htmlembed?gid=${gid}&range=F1:J37&widget=false&headers=false&chrome=false`;
         document.getElementById('modal-iframe').src = url;
         document.getElementById('modal').style.display = 'flex';
     }
@@ -422,3 +422,4 @@ window.handleResponse = function(response) {
 </body>
 
 </html>
+
