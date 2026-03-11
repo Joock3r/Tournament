@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מונדיאל 2026 - מרכז ההימורים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --primary: #0046ad;
+            --accent: #d4af37;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --gray-out: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        /* ניווט */
+        nav { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        nav button { background: none; border: none; padding: 0.6rem 1rem; cursor: pointer; font-weight: 600; color: #64748b; transition: 0.3s; border-radius: 8px; font-size: 0.95rem; }
+        nav button.active { background: var(--primary); color: white; }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        h2 { color: var(--primary); margin-bottom: 1.5rem; border-right: 4px solid var(--accent); padding-right: 15px; }
+        
+        /* טיימר - מיושר לימין */
+        .countdown { font-size: 2.2rem; font-weight: 700; color: var(--primary); text-align: right; margin: 1.5rem 0; direction: rtl; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: right; padding: 12px; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; color: var(--primary); }
+
+        /* גריד משחקים */
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .game-btn { padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; font-weight: 600; text-decoration: none; display: flex; flex-direction: column; gap: 5px; }
+        
+        /* כפתור פעיל */
+        .game-btn.active { background: white; color: var(--primary); border-color: var(--primary); }
+        .game-btn.active:hover { background: var(--primary); color: white; }
+        
+        /* כפתור פג תוקף */
+        .game-btn.expired { background: var(--gray-out); color: #64748b; cursor: pointer; border-color: #94a3b8; }
+        .game-btn.expired span { font-size: 0.8rem; font-weight: normal; }
+
+        /* מודאל (פופ-אפ) לתוצאות */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 90%; max-width: 800px; height: 80%; border-radius: 20px; overflow: hidden; position: relative; }
+        .close-modal { position: absolute; top: 15px; left: 15px; background: #eee; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        #modal-iframe { width: 100%; height: 100%; border: none; }
+
+        iframe { width: 100%; height: 600px; border: none; border-radius: 12px; }
+		
+		/* חוקים - עיצוב טקסט */
+        .rules-content h3 { margin: 1.5rem 0 0.5rem; color: var(--text); font-size: 1.2rem; }
+        .rules-content p, .rules-content li { margin-bottom: 0.8rem; font-size: 1.05rem; }
+        .rules-content ul { padding-right: 20px; }
+		
+		.whatsapp-btn { display: inline-block; background: #25D366; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .whatsapp-btn:hover { background: #128C7E; transform: scale(1.05); }
+		
+		#hof table tbody td:last-child {
+		font-weight: bold;}
+
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <button onclick="showSection('home', this)" class="active">דף הבית</button>
+    <button onclick="showSection('rules', this)">חוקים</button>
+    <button onclick="showSection('bets', this)">הימורים כלליים</button>
+    <button onclick="showSection('games', this)">משחקים (104)</button>
+    <button onclick="showSection('recs', this)">המלצות</button>
+    <button onclick="showSection('hof', this)">היכל התהילה</button>
+</nav>
+
+<div class="container">
+    <div id="home" class="section active">
+        <div class="card">
+            <h2>הספירה לאחור למונדיאל 2026</h2>
+            <div id="countdown" class="countdown">טוען...</div>
+        </div>
+        <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">טבלת ניקוד מובילים</h3>
+        <button onclick="fetchScores()" style="background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;">
+            🔄 רענן נתונים
+        </button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>דירוג</th>
+                <th>שם</th>
+                <th>ניקוד</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+            <tr><td colspan="3">טוען נתונים...</td></tr>
+        </tbody>
+    </table>
+</div>
+    </div>
+
+    <div id="rules" class="section">
+        <div class="card rules-content">
+            <h2>חוקי התחרות</h2>
+            
+            <h3>הימורים כלליים</h3>
+            <ul>
+                <li><strong>הרביעיה הסופית:</strong> על כל משתתף לקבוע את הרביעיה הסופית (זוכה + מקום 2-4).</li>
+                <li>נבחרת אחת מהרביעיה = 6 נק'.</li>
+                <li>שתי נבחרות = 13 נק'.</li>
+                <li>שלוש נבחרות = 25 נק'.</li>
+                <li>כל הרביעיה = 37 נק'.</li>
+                <li><strong>ניחוש האלופה:</strong> בונוס של 14 נקודות נוספות.</li>
+                <li><strong>מלך השערים:</strong> ניחוש נכון מזכה ב-21 נקודות.</li>
+                <li><strong>הנבחרת המבקיעה ביותר:</strong> ניחוש נכון מזכה ב-9 נקודות.</li>
+                <li><strong>סדר הבתים:</strong> ניקוד על מיקום מדויק בבית הוא 3 נקודות, ונקודה על מיקום שגוי (מינימום 4, מקסימום 12 לבית).</li>
+            </ul>
+
+            <h3>הימורי שלבים (בתים/נוקאאוט)</h3>
+            <p>הזנת תוצאה עד שעת המשחק בסקר הרלוונטי. הסקר נסגר אוטומטית!</p>
+            <ul>
+                <li>ניתן לערוך את הטופס כל עוד המשחק לא החל.</li>
+                <li>בשלבי הנוקאאוט התוצאה נחשבת ל-90 דקות.</li>
+                <li>במשחקי לילה, התוצאות והטבלאות יתעדכנו בבוקר.</li>
+            </ul>
+
+            <h3>חישוב הניקוד למשחק</h3>
+            <table>
+                <tr><td>כובש שער ראשון</td><td>2 נק'</td></tr>
+                <tr><td>ניחוש תוצאה (1/X/2)</td><td>1 נק'</td></tr>
+                <tr><td>הפרש שערים מדויק</td><td>2 נק'</td></tr>
+                <tr><td>תוצאה מדויקת</td><td>3 נק'</td></tr>
+            </table>
+
+            <h3>פרסים</h3>
+            <p>חלוקת הפרס תלויה במספר המשתתפים (מקום ראשון עד שלישי). הסכום המדויק יעודכן ביום הפתיחה.</p>
+
+            <a href="https://chat.whatsapp.com/CXEZS9aQy6TKUXn3Qdwu1D" class="whatsapp-btn" target="_blank">הצטרפות לקבוצת הווצאפ</a>
+        </div>
+    </div>
+
+    <div id="bets" class="section">
+        <div class="card">
+            <h2>טופס הימורים כלליים</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScbqlDR8cCLkNnKwXmK9XJsSWansMnpe9_IMqDte3JEeFdWhw/viewform?embedded=true"></iframe>
+        </div>
+    </div>
+
+    <div id="games" class="section">
+        <div class="card">
+            <h2>רשימת משחקים לשליחת הימורים</h2>
+            <p style="margin-bottom: 15px;">כפתור כחול = טופס פתוח. כפתור אפור = המשחק החל, לחץ לצפייה בתוצאות.</p>
+            <div class="games-grid" id="games-container">
+                </div>
+        </div>
+    </div>
+
+    <div id="recs" class="section">
+        <div class="card rules-content">
+            <h2>קישורים והמלצות</h2>
+            <ul>
+                <li><a href="https://2026bracket.vercel.app/" target="_blank">FIFA World Cup 2026 Bracker Predictor</a></li>
+                <li><a href="https://www.worldfootball.net/competition/co139/fifa-world-cup/standings-calculator/" target="_blank">FIFA World Cup 2026 Simulator</a></li>
+				<li><a href="https://simworldcup.onrender.com/" target="_blank">FIFA World Cup 2026 Custom Simulator</a></li>
+				<li>מחשבון סיכויים יעלה לקראת הטורניר</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="hof" class="section">
+        <div class="card">
+            <h2>היכל התהילה</h2>
+            <table>
+                <thead><tr><th>טורניר</th><th>מארחת</th><th>זוכה</th><th>אלוף ההימורים</th></tr></thead>
+                <tbody>
+                    <tr><td>יורו 2024</td><td>גרמניה</td><td>ספרד</td><td>טימור</td></tr>
+                    <tr><td>מונדיאל 2022</td><td>קטר</td><td>ארגנטינה</td><td>ניק</td></tr>
+                    <tr><td>יורו 2020</td><td>אירופה</td><td>איטליה</td><td>אלכסי</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">X</button>
+        <iframe id="modal-iframe" src=""></iframe>
+    </div>
+</div>
+
+<script>
+    // הגדרות כלליות
+    const MAIN_SHEET_ID = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
+
+    // --- הזנת נתוני 112 משחקים ---
+    // כאן אתה מעדכן את הנתונים לכל משחק
+    const gamesData = [
+	{ id: 1, name: "מקסיקו - דרום אפריקה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSd5abCXjH9x-65fDdZ-Br4pj5zXaVviYr9UtxJUaYARKYkaSA/viewform", gid: "598826871" },
+	{ id: 2, name: "דרום קוריאה - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSet-GREqQV1EHDwrCneNFjd0Kn50nMFhypgBxeKdfpkjDeitg/viewform", gid: "1058731134" },
+	{ id: 3, name: "קנדה - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSf3hJMdP9dJKRI1ebrV5bTPvylr4pmdRNb0IMEhxU65fdvSuQ/viewform", gid: "1804805163" },
+	{ id: 4, name: "ארצות הברית - פרגוואי", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSe7Hq8v9bRhXuDIAyaFA3AMQNdWFMkSJmYzn0XKPP4G7OEjWA/viewform", gid: "658880319" },
+	{ id: 5, name: "קטאר - שוויץ", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSel_DKD2zFqaocP9eQRhn0JsgDQj1-VSld_Q2ztHm1-Vhub5A/viewform", gid: "1814184473" },
+	{ id: 6, name: "ברזיל - מרוקו", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScqh5UvMc3CWqy0Tef2Kr2d22NTyd3Sid72BeN3PBUj2hjZjg/viewform", gid: "1186322481" },
+	{ id: 7, name: "האיטי - סקוטלנד", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScZQyy5Xs7VdaESTjpLTVcYTUd_sgvF-mZwttNnlmy3Aun9Rg/viewform", gid: "1037457311" },
+	{ id: 8, name: "אוסטרליה - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeaHDcNecXUFjwnoIgAYaS9ODZx4FXEFWaKNMQbk6jF-4VKhQ/viewform", gid: "884050388" },
+	{ id: 9, name: "גרמניה - קוראסאו", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfItIbYBJC35HcJh5F2PLTWb-lFCiO1DMV7sNH_ZNmjh6YKsQ/viewform", gid: "1652317723" },
+	{ id: 10, name: "הולנד - יפן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfPieurflVXN_ugLHnKNlX068UN-urLeO8wUEuxqxguR2UKUA/viewform", gid: "637775595" },
+	{ id: 11, name: "חוף השנהב - אקוודור", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfHS8J1XsYKevJZ3DV-Yc4sw537GP2vXjw2klv8CPKUqkY1-A/viewform", gid: "2057016713" },
+	{ id: 12, name: "לא נקבע - תוניסיה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfzWFWybElo41j9FJWJHWDBmHbKc8M_PKih9JhNos2e3n8IXg/viewform", gid: "572620568" },
+	{ id: 13, name: "ספרד - כף ורדה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSecM86qNavBRtKRXl6foFMrmEB7O6nAxxtC1M50lYxBCPCjgw/viewform", gid: "116023111" },
+	{ id: 14, name: "בלגיה - מצרים", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSePAgAx7_AVQ3r4FtwcToSei_P5hjDyfJCZGJ_tBq88dwt-vA/viewform", gid: "221129137" },
+	{ id: 15, name: "ערב הסעודית - אורוגוואי", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScYUph2uOKpJ6B5j1WT-DEgsXll-_D0_b_0bGOub49s-VU97w/viewform", gid: "1896691464" },
+	{ id: 16, name: "אירן - ניו זילנד", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdmrxsM8cyZv-j-jIyIi4jOuHsYVzFHplOZbrWMbyD5pMLhrw/viewform", gid: "1552749963" },
+	{ id: 17, name: "צרפת - סנגל", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdvcZjbTJ5vy5VoKPpXdrGfEFRPOfFSU9VYYCIFkfBsmNvcxQ/viewform", gid: "372844025" },
+	{ id: 18, name: "לא נקבע - נורווגיה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScovf5R6IT9ECpmLIZKafUpRBUhz4iTLgrys9b8ot9qOiYZKQ/viewform", gid: "2001838730" },
+	{ id: 19, name: "ארגנטינה - אלג'יריה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSc6idryfXcxrYUx7yQIN14IFIm_-k2Rw3c4FHobdjG5fYGpjw/viewform", gid: "2138787854" },
+	{ id: 20, name: "אוסטריה - ירדן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSefd_J0bT7rnbClSW2cXc-KHgJJqGHD5svmvV8PLl7XFgIfWw/viewform", gid: "666641957" },
+	{ id: 21, name: "פורטוגל - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdGKMukR1xDtsJ50zlyYzX2o_HNKk8Zr14-48U6dXTs4jofvg/viewform", gid: "1084805987" },
+	{ id: 22, name: "אנגליה - קרואטיה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfnql4f5NRBuh6RWZB7STz0uXqbA9A_RrGviKrd1OU4jJBizQ/viewform", gid: "1644982598" },
+	{ id: 23, name: "גאנה - פנמה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSd7How5ASr-i6bKuFh9xKISXDOVHjw2OcwVQKtClX3MtaGrpw/viewform", gid: "169099010" },
+	{ id: 24, name: "אוזבקיסטן - קולומביה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSf4I1DLmp0gkVL6FPm7Af_9UdBHSP5kJzSa8IdWgvMFul3L2g/viewform", gid: "1897080980" },
+	{ id: 25, name: "לא נקבע - דרום אפריקה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdI6ghHNX0W057tkbeGOlAiI24cqJK5-QhRDzB8Ka7TW3BpPg/viewform", gid: "316634681" },
+	{ id: 26, name: "שוויץ - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSe0cJi1JKd1zK_njP3TaJvCepsr7_GW7P7UIOFAOP9vR4jY5g/viewform", gid: "930501590" },
+	{ id: 27, name: "קנדה - קטאר", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeuVe_aHTLxXedCX9zbSWf1I25ur9Cw88_zFWYOKaX6mt0v8A/viewform", gid: "477268751" },
+	{ id: 28, name: "מקסיקו - דרום קוריאה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSewXG4XnIsAUWt5IiA7xgrj03A54Buq8e7A7kOXMyEMTz6U8g/viewform", gid: "1469925191" },
+	{ id: 29, name: "ארצות הברית - אוסטרליה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeyZr8u1Pvyh9medKZvm04pBPITLoBr1OQ7uDPr7oo6MLDa9Q/viewform", gid: "1799541679" },
+	{ id: 30, name: "סקוטלנד - מרוקו", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfcaFM3B9n26ru48shVW4fqYyBiqGwlAuJe8zWRxH0NxCg_PQ/viewform", gid: "1578377949" },
+	{ id: 31, name: "ברזיל - האיטי", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdAwHEAGKY7rfYcal1Liaz-P2PPyYXOBZnpJJGyg-FBRrBJVA/viewform", gid: "1811230079" },
+	{ id: 32, name: "לא נקבע - פרגוואי", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScHpMuoQ8BIP4s8HVy9JdvqFxQ3fE-iUhqriauR8WO8bDYGAA/viewform", gid: "706191759" },
+	{ id: 33, name: "הולנד - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSc6PNiC_hE_zQYof4O82FfNpoOcHoo8TQ8aE1G5FruNoTLkuw/viewform", gid: "437640975" },
+	{ id: 34, name: "גרמניה - חוף השנהב", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSce_UuJm2Hl2V0JGul9K4_z92zP4wHN1Hra_YFmuzHKSpDvPA/viewform", gid: "1931903824" },
+	{ id: 35, name: "אקוודור - קוראסאו", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeHvJh-cexUj4ViF75xTLXi9oIuAcLgyF9tQ7urztnsQp_arQ/viewform", gid: "2079599559" },
+	{ id: 36, name: "תוניסיה - יפן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeTCYK9gmLZ3i99Cry7tnsWabvARjvnc0nJMVw0Gie6MyaM_g/viewform", gid: "316076582" },
+	{ id: 37, name: "ספרד - ערב הסעודית", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdCMVOXu3afMLUaB41-cidcwyz48uqPiQZ7cltjQNxhCfbPRw/viewform", gid: "1086013222" },
+	{ id: 38, name: "בלגיה - אירן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeLmyYGYs_O-yNr_Eyj1MZqFd8PjXU8VFZytG8GN0ixn0pF9g/viewform", gid: "1717205691" },
+	{ id: 39, name: "אורוגוואי - כף ורדה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScCbLDZ0eXUFJSkVgriFQUA5gozVs_gboGJHQoEKWcvCigKvQ/viewform", gid: "269235331" },
+	{ id: 40, name: "ניו זילנד - מצרים", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSerlBtn84E7ip0diJPK4uwzM7Pn8CFuiaLSmsjKqSgh8wsC2A/viewform", gid: "1470786541" },
+	{ id: 41, name: "ארגנטינה - אוסטריה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSc1cufzFAps2y6n3SP-GiRX-Ohs8rFOcBTdwN1VGDlrNvB8tw/viewform", gid: "216539825" },
+	{ id: 42, name: "צרפת - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfZFP56qtO-CcUFvNuuNAwHUYITng1rPD6Fss_vv7mssWBh9w/viewform", gid: "798167200" },
+	{ id: 43, name: "נורווגיה - סנגל", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdOMYsYzH7YjO8rY4kngvouO76LtSEGW87q4a7DtnsTeyuSJg/viewform", gid: "1851847102" },
+	{ id: 44, name: "ירדן - אלג'יריה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSf2XKYTuPZ53AiWBAhpWltxQ_S9q2KRyMDEWVfOCTDuulxxkA/viewform", gid: "1547629673" },
+	{ id: 45, name: "פורטוגל - אוזבקיסטן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScrDvZEnyuhSQkmb8ToNJSbYfRQErHygFHDdLnr62WyihV7CA/viewform", gid: "307871631" },
+	{ id: 46, name: "אנגליה - גאנה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeyfK8CNUbqCx7VvsQswy6bDzL0KVlyN4YKFyD24sKp2JcgtA/viewform", gid: "1666574420" },
+	{ id: 47, name: "פנמה - קרואטיה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScWZHfuSdq1Zpt_n2ClrM2yxBr5RM9NS9GqMbXd97Y_mIwV_A/viewform", gid: "1489141652" },
+	{ id: 48, name: "קולומביה - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScSP3EuQ9NvoX-1nRHEKciKJJz1yBY2cNXEbkimKcasgBPwWQ/viewform", gid: "124833263" },
+	{ id: 49, name: "שוויץ - קנדה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScqGdCKpaA_kOMiNNX-X6n0l9A90AsGN9UXFlQRbtkS04ZLZQ/viewform", gid: "1194391142" },
+	{ id: 50, name: "לא נקבע - קטאר", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScw7kWUO_PkNEz4sWmmRgF9dLVJIqeQsQwpoWVSTCcAZqXf2g/viewform", gid: "596638541" },
+	{ id: 51, name: "מרוקו - האיטי", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSczWCMFRmHCxWuwF66q0u5-Jm8dUiypayoHvVsw_79C1v9Eeg/viewform", gid: "109776958" },
+	{ id: 52, name: "סקוטלנד - ברזיל", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScCndu4Bt-TFLAWl2ihKnI38qUR-HbxCI6Nt_BxnQZtqcS6aQ/viewform", gid: "229240315" },
+	{ id: 53, name: "דרום אפריקה - דרום קוריאה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeC4V_JVraqkwjxLAGXr1XjfUyfhvujfH8MDwQP0HIh9FGsCA/viewform", gid: "232992267" },
+	{ id: 54, name: "לא נקבע - מקסיקו", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdw5qNksfuxku75vMyV9ET-clIo8DgzfxZeR6FrrP2hRULnvQ/viewform", gid: "1959542654" },
+	{ id: 55, name: "קוראסאו - חוף השנהב", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeGieU3jm32lfPA7iCybYSiZ5fgMOOnTROixg4BOonxK1pcGA/viewform", gid: "493458009" },
+	{ id: 56, name: "אקוודור - גרמניה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeAPBkuWd1mcJWTEpXHI9VtsmX82xTsfE4W2TdD4oucgt1WSQ/viewform", gid: "344179332" },
+	{ id: 57, name: "תוניסיה - הולנד", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdyj1Ich-_kErjiYbaOnlAMrAuucudqDay4zRCEQRSveGZW0Q/viewform", gid: "1930023754" },
+	{ id: 58, name: "יפן - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSczkcaO_ylCNSJvVE3H7rem_OeBJu9sVnpmBAa5B919cLuJRQ/viewform", gid: "2093429119" },
+	{ id: 59, name: "לא נקבע - ארצות הברית", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfINRKUYTEdZ4XQRV3Ok2ArG01K1uTWlql6zKA0O9yR-0JJyw/viewform", gid: "745535943" },
+	{ id: 60, name: "פרגוואי - אוסטרליה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSerBvtbXf9Ayhhv8L9WFMB0MC4cdQb1Msj3iP3DnbHdOsXwHg/viewform", gid: "257459032" },
+	{ id: 61, name: "נורווגיה - צרפת", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScvaHqrKjfbk_g_LS-QpRVWyfFut4R0T63GEFHUziVgWzNhLA/viewform", gid: "519884514" },
+	{ id: 62, name: "סנגל - לא נקבע", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdVe3Dle08znsi7lcGiYPFjztbBV3qsGKZjzJY_AHfjQsA2NA/viewform", gid: "153564101" },
+	{ id: 63, name: "כף ורדה - ערב הסעודית", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdfyrHsbK75S_a5CCM6bLw0vhGBUHF3HHvQkHoTWPjt-afV9w/viewform", gid: "1474399475" },
+	{ id: 64, name: "אורוגוואי - ספרד", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfWun8CNhYZNdqgQgXnHfM2rlX5dKw_lNKx_EY_TQ8gVI2SHQ/viewform", gid: "546581703" },
+	{ id: 65, name: "ניו זילנד - בלגיה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfJrMjcgcyJXlGTFeGo0qwKiDDABL-D7Tg63-S0aMW8QFXItw/viewform", gid: "852734710" },
+	{ id: 66, name: "מצרים - אירן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfqHaYWM-EWAhkWGul5gI-fbrSQKIdtXv6mmTmW08wSCyIJfA/viewform", gid: "1931657912" },
+	{ id: 67, name: "פנמה - אנגליה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScVarCnKDdbegwl4g-qzptQni0ngtdpdN6BuFzSDnhn0oYAaQ/viewform", gid: "1649439857" },
+	{ id: 68, name: "קרואטיה - גאנה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfap-snFRw4b7Doplvyo_yu4_O28jYB-80hx6V2_DpWZCHpnQ/viewform", gid: "719049095" },
+	{ id: 69, name: "קולומביה - פורטוגל", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSffGlF2rimIz5TdGTCVvTRli44ddbKoPASO69v1Cuv9XIloVw/viewform", gid: "1202726971" },
+	{ id: 70, name: "לא נקבע - אוזבקיסטן", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfqeM-zJi2trgQdxbKxFPfBPkvhh5VluHH_o2O1qVm5j3vlZQ/viewform", gid: "1835350980" },
+	{ id: 71, name: "אלג'יריה - אוסטריה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdUVYGJphZLk9QQXDzkj2GCKxMh89jWPCu_p8UH2VAQ-79Q2Q/viewform", gid: "1926330830" },
+	{ id: 72, name: "ירדן - ארגנטינה", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSe-8Rfb4nFrXRqINpJf6ckzhsCOggs7orrHPdy8_2CHfTKYoA/viewform", gid: "1541335310" },
+	{ id: 73, name: "בית 73 - חוץ 73", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeHbAKrKCYd3PUT6iqvwSCaDCesqkLD50Qqbuz8dV4-LPU2Sw/viewform", gid: "949543286" },
+	{ id: 74, name: "בית 74 - חוץ 74", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSc-9rlCUWHAEoWDEaUDMYpSPDbLyII2H182Miw079-K04cw0Q/viewform", gid: "1843720493" },
+	{ id: 75, name: "בית 75 - חוץ 75", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScPS4MssYXnUfr9KQkDNBZs2tE99R79G0nDZsYhZ0BHsEynVw/viewform", gid: "1839756613" },
+	{ id: 76, name: "בית 76 - חוץ 76", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScAoNPObhO3gWLcUELRI-BpaFGMa1zLRDpKEykSod69Ko6-_Q/viewform", gid: "670681257" },
+	{ id: 77, name: "בית 77 - חוץ 77", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScYFDdORx5Vbo91TGd5NBIGAiWxory_CXy7bxVwRiXGQ1inpA/viewform", gid: "716980444" },
+	{ id: 78, name: "בית 78 - חוץ 78", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeI832OiGBWt2_dnJbbfnhw8pkNURv6szu_44iRJ1i0kPo_uQ/viewform", gid: "1476537992" },
+	{ id: 79, name: "בית 79 - חוץ 79", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSf601wFUiy-SYYtKIHSdQLHZwHnpMIvNaO75ZNFNYikiuXN_A/viewform", gid: "1364633450" },
+	{ id: 80, name: "בית 80 - חוץ 80", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfJLgdUiBWrOgTXOpP9olIRkCUi86pG5ZrU8pO44HtCLCSGKA/viewform", gid: "446722093" },
+	{ id: 81, name: "בית 81 - חוץ 81", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScwYzio85t-vM56nSweIwFyVdzMmtbOTcBT8SR-hVTM0dKk3g/viewform", gid: "1244743548" },
+	{ id: 82, name: "בית 82 - חוץ 82", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdQstYXIgFnHnB-oTeDAgW4ag9pCS-D7CK_oOf8MOgIDALwsA/viewform", gid: "1900268127" },
+	{ id: 83, name: "בית 83 - חוץ 83", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScS4DtzXQW8859s76tleUM6Gy5rWcOjXAZGilERQiIudMY2SA/viewform", gid: "302843984" },
+	{ id: 84, name: "בית 84 - חוץ 84", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSd3a0471n4zPmNFLGwRdlDfMgzzDfZ2QurtAwY1xt1tv01Ilw/viewform", gid: "1175345073" },
+	{ id: 85, name: "בית 85 - חוץ 85", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSc6DSKTNIPN1sZJhITh8z9IVLkCKd-GtqznY10C93qyn_OgzQ/viewform", gid: "959470748" },
+	{ id: 86, name: "בית 86 - חוץ 86", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScumNeQS5-7AbkunkzGXtJgcMwldp_syjEYEgPrZB5kntI6Iw/viewform", gid: "630665587" },
+	{ id: 87, name: "בית 87 - חוץ 87", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeY_3UBJsNgNy--wn5M88plAF_RTkxqOW4nqwM2gKMFw4_zFw/viewform", gid: "1721356723" },
+	{ id: 88, name: "בית 88 - חוץ 88", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdRHzR-cczdi7lReys40jXCu5a7-UpN-xojn6iAwKqo1SJp1g/viewform", gid: "1463098814" },
+	{ id: 89, name: "בית 89 - חוץ 89", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfqIWUUmRxOQqD-MjPU4wZRsM2_kGFfL1hB41m2cCWw9XtTzA/viewform", gid: "1213185608" },
+	{ id: 90, name: "בית 90 - חוץ 90", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScs9hmiib-_ao8tQD0eLYJ-Md1WaqDfo81IWv1iZYr0iFQhcQ/viewform", gid: "2034413408" },
+	{ id: 91, name: "בית 91 - חוץ 91", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSd5-vOV7d0_GzPLWD5cO1DlWcT4kBkUDirf4pv8k-lqV1CC3Q/viewform", gid: "1700995984" },
+	{ id: 92, name: "בית 92 - חוץ 92", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScIBr3exNW-gkvSCL63BkjpEvd9OfRG9Xp6UFRh7YAxvQTbeQ/viewform", gid: "1246644142" },
+	{ id: 93, name: "בית 93 - חוץ 93", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdLL6juE7pB34GKy51xkBsUCIOgmrPYXv7QY6eST5F08CisBQ/viewform", gid: "1703684066" },
+	{ id: 94, name: "בית 94 - חוץ 94", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfBGupFyG-xKBKSvmJMezF5i40a3shMwc0z_euVjLJPvDMm5g/viewform", gid: "2073440427" },
+	{ id: 95, name: "בית 95 - חוץ 95", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfJwJbqVhYKLByPY7ncEUKcSC6VbsX7H7VYuP_il0QRpdCRUQ/viewform", gid: "877443328" },
+	{ id: 96, name: "בית 96 - חוץ 96", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfGq6Xp7M6PYpdSxQtR0Zy7ZoePdH7XgNS5SD03q-S3LeDn-Q/viewform", gid: "1312461767" },
+	{ id: 97, name: "בית 97 - חוץ 97", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfPb5yZoSiTk0QE6IXsTBzIXq87v30cO7I6DfGERUCXMqo5cA/viewform", gid: "765488460" },
+	{ id: 98, name: "בית 98 - חוץ 98", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfMsKYxDf3E8-DFKH4GQlmliGYroaF4VllJrpn7DgnlXb08yw/viewform", gid: "1536946178" },
+	{ id: 99, name: "בית 99 - חוץ 99", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScGu1zUJWXiRWN90pYVkN-RZ1_j4WmyJBkYXRgBsPXm0cWvyw/viewform", gid: "316485624" },
+	{ id: 100, name: "בית 100 - חוץ 100", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSdLEVe2aGkdFCiD_mQ1bMRnr1aoZFJtLg0GL72CNm6sPoXHJw/viewform", gid: "1928843538" },
+	{ id: 101, name: "בית 101 - חוץ 101", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSeFSYappJGnXi4CiDs34d2T1CtbrAlfnW8--ROS67bmnjGr-Q/viewform", gid: "397007564" },
+	{ id: 102, name: "בית 102 - חוץ 102", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScBOOYHzRLi3AiKhJhq_SxvHrQWvuyMnNJquhjBPtURR8vWQw/viewform", gid: "1220500757" },
+	{ id: 103, name: "בית 103 - חוץ 103", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLSfwZfmx_ne1u7GYr9zQQqk666oQkmXy8fwLcTmM5Sa_1ceHoA/viewform", gid: "1098827059" },
+	{ id: 104, name: "בית 104 - חוץ 104", date: "2026-05-19T15:00:00", form: "https://docs.google.com/forms/d/e/1FAIpQLScTWHSbzh1jvY3vvwme8iDnf5IfK5zhx5b37-n0zuXZ-Zb1hw/viewform", gid: "1791230414" },
+	];
+
+    // יצירת 112 כפתורים (אם המערך למעלה חלקי, נשלים אוטומטית למטרות הדגמה)
+    function initGames() {
+        const container = document.getElementById('games-container');
+        container.innerHTML = '';
+        const now = new Date();
+
+        // במידה ולא הזנת את כל ה-112 במערך, הלופ הזה יוודא שיוצגו 112 כפתורים
+        for (let i = 1; i <= 104; i++) {
+            const data = gamesData.find(g => g.id === i) || { id: i, name: `משחק ${i}`, date: "2026-06-11T00:00:00", form: "#", gid: "0" };
+            const gameDate = new Date(data.date);
+            const isExpired = now > gameDate;
+
+            const btn = document.createElement('a');
+            btn.className = `game-btn ${isExpired ? 'expired' : 'active'}`;
+            
+            if (isExpired) {
+                btn.innerHTML = `<strong>${data.name}</strong><span>סגור - צפה בתוצאות</span>`;
+                btn.onclick = () => openModal(data.gid);
+            } else {
+                btn.innerHTML = `<strong>${data.name}</strong><span>שלח הימור</span>`;
+                btn.href = data.form;
+                btn.target = "_blank";
+            }
+            container.appendChild(btn);
+        }
+    }
+
+    // פונקציות המודאל
+    function openModal(gid) {
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/htmlembed?gid=${gid}&range=A1:E20`;
+        document.getElementById('modal-iframe').src = url;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('modal-iframe').src = '';
+    }
+
+    // ניווט
+    function showSection(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // טיימר
+    const targetDate = new Date("June 11, 2026 21:00:00").getTime();
+    setInterval(() => {
+        const now = new Date().getTime();
+        const dist = targetDate - now;
+        const d = Math.floor(dist / (1000*60*60*24)), h = Math.floor((dist%(1000*60*60*24))/(1000*60*60)), m = Math.floor((dist%(1000*60*60))/(1000*60)), s = Math.floor((dist%(1000*60))/1000);
+        document.getElementById("countdown").innerHTML = dist < 0 ? "המונדיאל החל!" : `עוד ${d} ימים, ${h} שעות, ${m} דקות ו-${s} שניות`;
+    }, 1000);
+
+    // טעינת טבלת ניקוד
+    function fetchScores() {
+    // הצגת הודעת טעינה בטבלה בכל פעם שמרעננים
+    const tableBody = document.getElementById('leaderboard-body');
+    if (tableBody) {
+        tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">מרענן נתונים...</td></tr>';
+    }
+
+    const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
+    const gid = '0'; // וודא שזה ה-GID הנכון של גיליון FINAL כפי שמצאת
+    const query = encodeURIComponent('SELECT E, G, F OFFSET 0'); 
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
+
+    // יצירת אלמנט סקריפט חדש
+    const script = document.createElement('script');
+    script.src = url;
+    
+    // מחיקת הסקריפט מה-DOM לאחר הטעינה כדי לשמור על דף נקי
+    script.onload = () => script.remove();
+    
+    document.body.appendChild(script);
+}
+
+// הפונקציה שמקבלת את הנתונים מגוגל ומעבדת אותם ל-HTML
+window.handleResponse = function(response) {
+    const rows = response.table.rows;
+    let html = '';
+    
+    // רצים על השורות (עד שורה 27 בגיליון המקורי)
+    for (let i = 0; i < Math.min(rows.length, 25); i++) {
+        const row = rows[i].c;
+        const rank = row[0] ? row[0].v : '';
+        const name = row[1] ? row[1].v : '';
+        const score = row[2] ? row[2].v : '';
+        
+        html += `<tr>
+            <td>${rank}</td>
+            <td>${name}</td>
+            <td><strong>${score}</strong></td>
+        </tr>`;
+    }
+    document.getElementById('leaderboard-body').innerHTML = html;
+};
+
+    // הפעלה ראשונית
+    initGames();
+    fetchScores();
+</script>
+</body>
+</html>
