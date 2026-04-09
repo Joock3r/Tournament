@@ -582,17 +582,26 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 window.handleResponse = function(response) {
     const rows = response.table.rows;
     let html = '';
-    
+
+    const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+    const aiPlayers = ['פרפלקסיטי', 'צ\'אט', 'קלוד', 'ג\'מיני'];
+
     // רצים על השורות (עד שורה 27 בגיליון המקורי)
     for (let i = 0; i < Math.min(rows.length, 25); i++) {
         const row = rows[i].c;
         const rank = row[0] ? row[0].v : '';
-        const name = row[1] ? row[1].v : '';
+        const name = row[1] ? String(row[1].v) : '';
         const score = row[2] ? row[2].v : '';
-        
+
+        const rankDisplay = medals[rank] || rank;
+        const isAI = aiPlayers.some(ai => name.includes(ai));
+        const nameDisplay = isAI
+            ? `${name} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
+            : name;
+
         html += `<tr>
-            <td>${rank}</td>
-            <td>${name}</td>
+            <td>${rankDisplay}</td>
+            <td>${nameDisplay}</td>
             <td><strong>${score}</strong></td>
         </tr>`;
     }
