@@ -929,7 +929,7 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 
     const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
     const gid = '0'; // וודא שזה ה-GID הנכון של גיליון FINAL כפי שמצאת
-    const query = encodeURIComponent('SELECT E, G, F OFFSET 0'); 
+    const query = encodeURIComponent('SELECT E, G, F OFFSET 2); 
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
 
     // יצירת אלמנט סקריפט חדש
@@ -947,7 +947,7 @@ window.handleResponse = function(response) {
     const rows = response.table.rows;
     let html = '';
 
-    const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+    const medals = { 1: '🥇', 2: '🥈'};
     const aiPlayers = ['פרפלקסיטי', 'צ\'אט', 'קלוד', 'ג\'מיני'];
 
     // רצים על השורות (עד שורה 27 בגיליון המקורי)
