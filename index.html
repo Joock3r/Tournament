@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -924,12 +925,12 @@ L – אנגליה, קרואטיה, גאנה, פנמה
     // הצגת הודעת טעינה בטבלה בכל פעם שמרעננים
     const tableBody = document.getElementById('leaderboard-body');
     if (tableBody) {
-        tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">מרענן נתונים...</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="1" style="text-align:center;">מרענן נתונים...</td></tr>';
     }
 
     const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
     const gid = '0'; // וודא שזה ה-GID הנכון של גיליון FINAL כפי שמצאת
-    const query = encodeURIComponent('SELECT E, G, F OFFSET 2); 
+    const query = encodeURIComponent('SELECT E, G, F OFFSET 2'); 
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
 
     // יצירת אלמנט סקריפט חדש
@@ -979,4 +980,3 @@ window.handleResponse = function(response) {
 </body>
 
 </html>
-
