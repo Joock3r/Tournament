@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -88,10 +89,6 @@
 <div class="container">
     <div id="home" class="section active">
         <div class="card">
-            <h2>הספירה לאחור למונדיאל 2026</h2>
-            <div id="countdown" class="countdown">טוען...</div>
-        </div>
-        <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <h3 style="margin: 0;">טבלת ניקוד מובילים</h3>
         <button onclick="fetchScores()" style="background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;">
@@ -177,11 +174,17 @@
 </div>
 
     <div id="bets" class="section">
-        <div class="card">
-            <h2>טופס הימורים כלליים</h2>
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScbqlDR8cCLkNnKwXmK9XJsSWansMnpe9_IMqDte3JEeFdWhw/viewform?embedded=true"></iframe>
-        </div>
-    </div>
+  <div class="card">
+    <h2>הימורים כלליים</h2>
+
+    <button onclick="loadBetsData()" 
+        style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;margin-bottom:15px;">
+        🔄 טען נתונים
+    </button>
+
+    <div id="bets-container">טוען נתונים...</div>
+  </div>
+</div>
 
     <div id="games" class="section">
         <div class="card">
@@ -560,14 +563,26 @@ L – אנגליה, קרואטיה, גאנה, פנמה
         document.getElementById('modal').style.display = 'none';
         document.getElementById('modal-iframe').src = '';
     }
+	
+	function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+}
 
+	
     // ניווט
-    function showSection(id, btn) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
+    const originalShow = showSection;
+
+window.showSection = function(id, btn) {
+    originalShow(id, btn);
+
+    if(id === 'bets' && !window._betsLoaded){
+        loadBetsData();
+        window._betsLoaded = true;
     }
+}
 
     // טיימר
     const targetDate = new Date("June 11, 2026 22:00:00").getTime();
@@ -873,6 +888,126 @@ window.showSection = function(id, btn) {
     // הפעלה ראשונית
     initGames();
     fetchScores();
+	
+	const BETS_GID = '1559954067';
+
+// פונקציה לשליפת נתונים מטווח
+function fetchRange(range, cbName) {
+    const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+        + `?tq=${encodeURIComponent('SELECT *')}`
+        + `&range=${range}`
+        + `&gid=${BETS_GID}`
+        + `&tqx=responseHandler:${cbName}`;
+
+    const s = document.createElement('script');
+    s.src = url;
+    document.body.appendChild(s);
+}
+
+// ================================
+// בניית טבלה עם כותרות!
+// ================================
+function buildTable(title, headers, response) {
+    let html = `<div class="card"><h3>${title}</h3><table>`;
+
+    // כותרות
+    html += "<thead><tr>";
+    headers.forEach(h => {
+        html += `<th>${h}</th>`;
+    });
+    html += "</tr></thead>";
+
+    html += "<tbody>";
+
+    const rows = response.table.rows;
+
+    rows.forEach(r => {
+        html += "<tr>";
+        r.c.forEach(c => {
+            html += `<td>${c?.v ?? ''}</td>`;
+        });
+        html += "</tr>";
+    });
+
+    html += "</tbody></table></div>";
+    return html;
+}
+
+// ================================
+// טעינת כל הנתונים
+// ================================
+function loadBetsData() {
+    const container = document.getElementById('bets-container');
+    container.innerHTML = 'טוען נתונים...';
+
+    let results = {};
+    let loaded = 0;
+    const TOTAL = 14;
+
+    function done() {
+        loaded++;
+        if (loaded === TOTAL) render();
+    }
+
+    function render() {
+        let html = '';
+
+        // 🏆 4 האחרונות
+        html += buildTable(
+            "🏆 4 האחרונות",
+            ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4"],
+            results.final4
+        );
+
+        // ⚽ מלך שערים
+        html += buildTable(
+            "⚽ מלך שערים",
+            ["משתתף","שחקן"],
+            results.scorer
+        );
+
+        // 🏠 בתים
+        const houses = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב'];
+
+        houses.forEach((h, i) => {
+            html += buildTable(
+                `🏠 בית ${h}`,
+                ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4"],
+                results[`house${i}`]
+            );
+        });
+
+        container.innerHTML = html;
+    }
+
+    // 4 האחרונות
+    window.cb1 = r => { results.final4 = r; done(); };
+    fetchRange("A183:E207","cb1");
+
+    // מלך שערים
+    window.cb2 = r => { results.scorer = r; done(); };
+    fetchRange("I183:J207","cb2");
+
+    // כל הבתים
+    const ranges = [
+        "A3:E27","H3:L27",
+        "A33:E57","H33:L57",
+        "A63:E87","H63:L87",
+        "A93:E117","H93:L117",
+        "A123:E147","H123:L147",
+        "A153:E177","H153:L177"
+    ];
+
+    ranges.forEach((range, i) => {
+        const cb = `cb_house_${i}`;
+        window[cb] = r => {
+            results[`house${i}`] = r;
+            done();
+        };
+        fetchRange(range, cb);
+    });
+}
+
 </script>
 </body>
 
