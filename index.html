@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -606,21 +607,142 @@ L – אנגליה, קרואטיה, גאנה, פנמה
     }, 1000);
 
     // טעינת טבלת ניקוד
+    let _lastRoundDiffs = {};
+    let _lastRankDiffs  = {};
+
     function fetchScores() {
         const tableBody = document.getElementById('leaderboard-body');
         if (tableBody) {
             tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">מרענן נתונים...</td></tr>';
         }
 
-        const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
-        const gid = '0';
-        const query = encodeURIComponent('SELECT E, G, F OFFSET 2');
-        const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
+        // שלב 1: קרא את A1 מגיליון 0 — מספר המשחקים ששוחקו
+        const cbCtrl = 'scoreCtrlCb_' + Date.now();
+        const ctrlUrl = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT A LIMIT 1')}`
+            + `&gid=${CONTROL_GID}&tqx=responseHandler:${cbCtrl}&headers=0`;
 
-        const script = document.createElement('script');
-        script.src = url;
-        script.onload = () => script.remove();
-        document.body.appendChild(script);
+        window[cbCtrl] = function(response) {
+            delete window[cbCtrl];
+            let currentGame = null;
+            try {
+                const val = response.table.rows[0].c[0].v;
+                currentGame = Number.isInteger(val) ? val : Math.round(parseFloat(val));
+            } catch(e) {
+                console.warn('לא ניתן לקרוא מספר משחק נוכחי:', e);
+            }
+            fetchStatsDiffs(currentGame);
+        };
+
+        const s0 = document.createElement('script');
+        s0.src = ctrlUrl;
+        s0.onload = () => s0.remove();
+        document.body.appendChild(s0);
+    }
+
+    function fetchStatsDiffs(currentGame) {
+        // שלב 2: מושך את גיליון ה-STATS כדי לחשב הפרשים לפי מספר משחק
+        const cbStats = 'scoreStatsCb_' + Date.now();
+        const statsUrl = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT * LIMIT 500 OFFSET 0')}`
+            + `&gid=${STATS_GID}&tqx=responseHandler:${cbStats}&headers=1`;
+
+        window[cbStats] = function(response) {
+            delete window[cbStats];
+            try {
+                const cols = response.table.cols;
+                const rows = response.table.rows;
+
+                // שמות שחקנים מהכותרות (עמודה 1 ואילך)
+                const playerNames = [];
+                for (let c = 1; c < cols.length; c++) {
+                    if (cols[c].label && cols[c].label.trim()) {
+                        playerNames.push({ name: cols[c].label.trim(), col: c });
+                    }
+                }
+
+                // בנה שתי מפות לפי מספר משחק:
+                // scoreRowMap[n] = שורת ניקוד מצטבר (עמודה A = n)
+                // rankRowMap[n]  = שורת דירוג (עמודה A = null, השורה לפני שורת n)
+                const scoreRowMap = {};
+                const rankRowMap  = {};
+
+                for (let ri = 0; ri < rows.length; ri++) {
+                    const row = rows[ri];
+                    if (!row || !row.c) continue;
+                    const aVal = row.c[0] ? row.c[0].v : null;
+
+                    if (aVal === null) {
+                        // שורת דירוג — המספר שלה הוא לפי השורה הבאה
+                        for (let rj = ri + 1; rj < rows.length; rj++) {
+                            const nextRow = rows[rj];
+                            if (!nextRow || !nextRow.c || !nextRow.c[0]) continue;
+                            const nextVal = nextRow.c[0].v;
+                            if (nextVal === null) continue;
+                            const num = typeof nextVal === 'number'
+                                ? (Number.isInteger(nextVal) ? nextVal : Math.round(nextVal))
+                                : parseInt(nextVal);
+                            if (!isNaN(num) && num > 0) {
+                                rankRowMap[num] = row.c;
+                            }
+                            break;
+                        }
+                    } else {
+                        const num = typeof aVal === 'number'
+                            ? (Number.isInteger(aVal) ? aVal : Math.round(aVal))
+                            : parseInt(aVal);
+                        if (!isNaN(num) && num > 0) {
+                            scoreRowMap[num] = row.c;
+                        }
+                    }
+                }
+
+                _lastRoundDiffs = {};
+                _lastRankDiffs  = {};
+
+                // הפרש ניקוד: משחק נוכחי מול קודם
+                const currentScoreRow = currentGame !== null ? scoreRowMap[currentGame] : null;
+                const prevScoreRow    = currentGame !== null ? scoreRowMap[currentGame - 1] : null;
+                if (currentScoreRow) {
+                    playerNames.forEach(p => {
+                        const curr = currentScoreRow[p.col]?.v != null ? Number(currentScoreRow[p.col].v) : 0;
+                        const prev = prevScoreRow?.[p.col]?.v != null ? Number(prevScoreRow[p.col].v) : 0;
+                        _lastRoundDiffs[p.name] = curr - prev;
+                    });
+                }
+
+                // הפרש דירוג: משחק נוכחי מול קודם (ירידה בדירוג = מספר גדל = רע)
+                const currentRankRow = currentGame !== null ? rankRowMap[currentGame] : null;
+                const prevRankRow    = currentGame !== null ? rankRowMap[currentGame - 1] : null;
+                if (currentRankRow) {
+                    playerNames.forEach(p => {
+                        const curr = currentRankRow[p.col]?.v != null ? Number(currentRankRow[p.col].v) : null;
+                        const prev = prevRankRow?.[p.col]?.v != null ? Number(prevRankRow[p.col].v) : null;
+                        if (curr !== null && prev !== null) {
+                            // ירידה בדירוג = מספר גדל (מקום 3→5 = ירידה של 2)
+                            // עלייה בדירוג = מספר קטן (מקום 5→3 = עלייה של 2)
+                            _lastRankDiffs[p.name] = prev - curr; // חיובי = עלייה, שלילי = ירידה
+                        }
+                    });
+                }
+
+            } catch(e) {
+                console.warn('לא ניתן לחשב הפרשי ניקוד/דירוג:', e);
+            }
+
+            // שלב 3: מושך את הטבלה הראשית
+            const query = encodeURIComponent('SELECT E, G, F OFFSET 2');
+            const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq?tq=${query}&gid=0&tqx=responseHandler:handleResponse`;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = () => script.remove();
+            document.body.appendChild(script);
+        };
+
+        const s = document.createElement('script');
+        s.src = statsUrl;
+        s.onload = () => s.remove();
+        document.body.appendChild(s);
     }
 
     window.handleResponse = function(response) {
@@ -630,17 +752,53 @@ L – אנגליה, קרואטיה, גאנה, פנמה
         const medals = { 1: '🥇', 2: '🥈' };
         const aiPlayers = ['גרוק', 'צ\'אט', 'קלוד', 'ג\'מיני'];
 
-        for (let i = 0; i < Math.min(rows.length, 25); i++) {
+        const totalRows = Math.min(rows.length, 25);
+
+        // מצא את הניקוד הנמוך ביותר (מקום אחרון — יכולים להיות כמה)
+        const allScores = [];
+        for (let i = 0; i < totalRows; i++) {
             const row = rows[i].c;
-            const rank = row[0] ? row[0].v : '';
-            const name = row[1] ? String(row[1].v) : '';
-            const score = row[2] ? row[2].v : '';
+            const score = row[2] ? Number(row[2].v) : null;
+            if (score !== null) allScores.push(score);
+        }
+        const minScore = allScores.length ? Math.min(...allScores) : null;
+
+        // מצא מי עלה/ירד הכי הרבה דירוגים
+        const rankDiffVals = Object.values(_lastRankDiffs);
+        const maxRankGain = rankDiffVals.length ? Math.max(...rankDiffVals) : null;
+        const maxRankLoss = rankDiffVals.length ? Math.min(...rankDiffVals) : null;
+
+        // ניקוד גבוה במשחק האחרון
+        const HIGH_SCORE_THRESHOLD = 6;
+
+        for (let i = 0; i < totalRows; i++) {
+            const row = rows[i].c;
+            const rank  = row[0] ? row[0].v : '';
+            const name  = row[1] ? String(row[1].v) : '';
+            const score = row[2] ? Number(row[2].v) : null;
 
             const rankDisplay = medals[rank] || rank;
             const isAI = aiPlayers.some(ai => name.includes(ai));
+
+            // התאמת שם לדיפים (חלקית)
+            const scoreDiffKey = Object.keys(_lastRoundDiffs).find(k => name.includes(k) || k.includes(name));
+            const scoreDiff    = scoreDiffKey !== undefined ? _lastRoundDiffs[scoreDiffKey] : null;
+
+            const rankDiffKey  = Object.keys(_lastRankDiffs).find(k => name.includes(k) || k.includes(name));
+            const rankDiff     = rankDiffKey !== undefined ? _lastRankDiffs[rankDiffKey] : null;
+
+            const emojis = [];
+            if (rank === 1)                                                                    emojis.push('👀');
+            if (score !== null && score === minScore)                                          emojis.push('💀');
+            if (rankDiff !== null && maxRankGain !== null && rankDiff === maxRankGain && maxRankGain > 0) emojis.push('📈');
+            if (rankDiff !== null && maxRankLoss !== null && rankDiff === maxRankLoss && maxRankLoss < 0) emojis.push('📉');
+            if (scoreDiff !== null && scoreDiff >= HIGH_SCORE_THRESHOLD)                       emojis.push('🔥');
+
+            const emojiStr = emojis.length ? ` ${emojis.join('')}` : '';
+
             const nameDisplay = isAI
-                ? `${name} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
-                : name;
+                ? `${name}${emojiStr} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
+                : `${name}${emojiStr}`;
 
             html += `<tr>
                 <td>${rankDisplay}</td>
