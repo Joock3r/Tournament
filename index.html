@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -21,7 +20,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Assistant', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
-        /* ניווט */
         nav { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         nav button { background: none; border: none; padding: 0.6rem 1rem; cursor: pointer; font-weight: 600; color: #64748b; transition: 0.3s; border-radius: 8px; font-size: 0.95rem; }
         nav button.active { background: var(--primary); color: white; }
@@ -35,26 +33,21 @@
         .card { background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
         h2 { color: var(--primary); margin-bottom: 1.5rem; border-right: 4px solid var(--accent); padding-right: 15px; }
         
-        /* טיימר - מיושר לימין */
         .countdown { font-size: 2.2rem; font-weight: 700; color: var(--primary); text-align: right; margin: 1.5rem 0; direction: rtl; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         th, td { text-align: right; padding: 12px; border-bottom: 1px solid var(--border); }
         th { background: #f8fafc; color: var(--primary); }
 
-        /* גריד משחקים */
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .game-btn { padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; font-weight: 600; text-decoration: none; display: flex; flex-direction: column; gap: 5px; }
         
-        /* כפתור פעיל */
         .game-btn.active { background: white; color: var(--primary); border-color: var(--primary); }
         .game-btn.active:hover { background: var(--primary); color: white; }
         
-        /* כפתור פג תוקף */
         .game-btn.expired { background: var(--gray-out); color: #64748b; cursor: pointer; border-color: #94a3b8; }
         .game-btn.expired span { font-size: 0.8rem; font-weight: normal; }
 
-        /* מודאל (פופ-אפ) לתוצאות */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; height: 80%; border-radius: 20px; overflow: hidden; position: relative; }
         .close-modal { position: absolute; top: 15px; left: 15px; background: #eee; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-weight: bold; }
@@ -62,7 +55,6 @@
 
         iframe { width: 100%; height: 600px; border: none; border-radius: 12px; }
 		
-		/* חוקים - עיצוב טקסט */
         .rules-content h3 { margin: 1.5rem 0 0.5rem; color: var(--text); font-size: 1.2rem; }
         .rules-content p, .rules-content li { margin-bottom: 0.8rem; font-size: 1.05rem; }
         .rules-content ul { padding-right: 20px; }
@@ -70,8 +62,7 @@
 		.whatsapp-btn { display: inline-block; background: #25D366; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s; }
         .whatsapp-btn:hover { background: #128C7E; transform: scale(1.05); }
 		
-		#hof table tbody td:last-child {
-		font-weight: bold;}
+		#hof table tbody td:last-child { font-weight: bold; }
     </style>
 </head>
 <body>
@@ -89,25 +80,25 @@
 <div class="container">
     <div id="home" class="section active">
         <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h3 style="margin: 0;">טבלת ניקוד מובילים</h3>
-        <button onclick="fetchScores()" style="background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;">
-            🔄 רענן נתונים
-        </button>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>דירוג</th>
-                <th>שם</th>
-                <th>ניקוד</th>
-            </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-            <tr><td colspan="3">טוען נתונים...</td></tr>
-        </tbody>
-    </table>
-</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">טבלת ניקוד מובילים</h3>
+                <button onclick="fetchScores()" style="background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;">
+                    🔄 רענן נתונים
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>דירוג</th>
+                        <th>שם</th>
+                        <th>ניקוד</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr><td colspan="3">טוען נתונים...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="rules" class="section">
@@ -152,65 +143,61 @@
     </div>
 	
 	<div id="stats" class="section">
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
-            <h2 style="margin: 0;">גרף התקדמות שחקנים</h2>
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                <button onclick="toggleAllPlayers(true)"  style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הצג הכל</button>
-                <button onclick="toggleAllPlayers(false)" style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הסתר הכל</button>
-                <button onclick="fetchStats()" style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;font-family:inherit;">🔄 רענן</button>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0;">גרף התקדמות שחקנים</h2>
+                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <button onclick="toggleAllPlayers(true)"  style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הצג הכל</button>
+                    <button onclick="toggleAllPlayers(false)" style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הסתר הכל</button>
+                    <button onclick="fetchStats()" style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;font-family:inherit;">🔄 רענן</button>
+                </div>
             </div>
+
+            <div id="stats-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem;direction:rtl;"></div>
+            <div id="stats-status" style="text-align:center;padding:2rem;color:#64748b;">טוען נתונים...</div>
+
+            <div style="position:relative;height:450px;display:none;" id="stats-chart-wrapper">
+                <canvas id="statsChart"></canvas>
+            </div>
+
+            <div id="stats-stage" style="text-align:center;margin-top:1rem;font-size:0.9rem;color:#64748b;font-weight:600;"></div>
         </div>
-
-        <div id="stats-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem;direction:rtl;"></div>
-        <div id="stats-status" style="text-align:center;padding:2rem;color:#64748b;">טוען נתונים...</div>
-
-        <div style="position:relative;height:450px;display:none;" id="stats-chart-wrapper">
-            <canvas id="statsChart"></canvas>
-        </div>
-
-        <div id="stats-stage" style="text-align:center;margin-top:1rem;font-size:0.9rem;color:#64748b;font-weight:600;"></div>
     </div>
-</div>
 
     <div id="bets" class="section">
-  <div class="card">
-    <h2>הימורים כלליים</h2>
-
-    <button onclick="loadBetsData()" 
-        style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;margin-bottom:15px;">
-        🔄 טען נתונים
-    </button>
-
-    <div id="bets-container">טוען נתונים...</div>
-  </div>
-</div>
+        <div class="card">
+            <h2>הימורים כלליים</h2>
+            <button onclick="loadBetsData()" 
+                style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;margin-bottom:15px;">
+                🔄 טען נתונים
+            </button>
+            <div id="bets-container">טוען נתונים...</div>
+        </div>
+    </div>
 
     <div id="games" class="section">
         <div class="card">
             <h2>רשימת משחקים לשליחת הימורים</h2>
             <p style="margin-bottom: 15px;">כפתור כחול = טופס פתוח. כפתור אפור = המשחק החל, לחץ לצפייה בתוצאות.</p>
-            <div class="games-grid" id="games-container">
-                </div>
+            <div class="games-grid" id="games-container"></div>
         </div>
     </div>
 
     <div id="recs" class="section">
-    <div class="card rules-content">
-        <h2>קישורים והמלצות</h2>
-        <ul>
-            <li><a href="https://play.fifa.com/bracket-predictor/brackets" target="_blank">Official FIFA World Cup 2026 Simulator</a></li>
-			<li><a href="https://2026bracket.vercel.app/" target="_blank">FIFA World Cup 2026 Bracket Predictor</a></li>
-			<li><a href="https://fuchibol.app/" target="_blank">FUCHIBOL World Cup 2026 Bracket Predictor</a></li>
-        </ul>
-    </div>
+        <div class="card rules-content">
+            <h2>קישורים והמלצות</h2>
+            <ul>
+                <li><a href="https://play.fifa.com/bracket-predictor/brackets" target="_blank">Official FIFA World Cup 2026 Simulator</a></li>
+                <li><a href="https://2026bracket.vercel.app/" target="_blank">FIFA World Cup 2026 Bracket Predictor</a></li>
+                <li><a href="https://fuchibol.app/" target="_blank">FUCHIBOL World Cup 2026 Bracket Predictor</a></li>
+            </ul>
+        </div>
 		
-    <div class="card rules-content prompt-card">
-        <h2>🧠 פרומפט חישוב עבור משחקים בודדים</h2>
-        <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
-        
-        <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
-            <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
+        <div class="card rules-content prompt-card">
+            <h2>🧠 פרומפט חישוב עבור משחקים בודדים</h2>
+            <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
+            <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
 אתה אנליסט כדורגל מתקדם המתמחה בחיזוי משחקים בינלאומיים, כולל FIFA World Cup 2026.
 המערכת פועלת ככלי חצי-אוטומטי עם זיכרון מתמשך ולמידה עצמית.
 ---
@@ -246,16 +233,14 @@
 עליך לעדכן את ה-Elo, את דירוגי השחקנים ואת ה-Brier Score לשיפור עצמי של המודל.
 
 ⚠️ חוקים: עבוד עם אי-ודאות, שמור על ריאליזם, והשתפר ממשחק למשחק.</pre>
-</div>
-        
-    </div>
+            </div>
+        </div>
 
-    <div class="card rules-content prompt-card2">
-        <h2>🧠 פרומפט חישוב הימורים כלליים</h2>
-        <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
-        
-        <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
-            <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
+        <div class="card rules-content prompt-card2">
+            <h2>🧠 פרומפט חישוב הימורים כלליים</h2>
+            <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
+            <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
 אתה אנליסט כדורגל מתקדם המתמחה בחיזוי משחקים בינלאומיים, כולל FIFA World Cup 2026.
 בצע סימולציה ריאליסטית ומפורטת של טורניר מונדיאל לפי ההנחיות והנתונים הבאים.
 
@@ -362,10 +347,9 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 ניתוח סופי קצר ומקצועי
 
 ⚠️ התייחס לסימולציה כאנליזה מקצועית מבוססת – לא כתוצאה אקראית.</pre>
-</div>
-        
+            </div>
+        </div>
     </div>
-</div>
 
     <div id="hof" class="section">
         <div class="card">
@@ -373,7 +357,7 @@ L – אנגליה, קרואטיה, גאנה, פנמה
             <table>
                 <thead><tr><th>טורניר</th><th>מארחת</th><th>זוכה</th><th>אלוף ההימורים</th></tr></thead>
                 <tbody>
-					<tr><td>מונדיאל 2026</td><td>ארה"ב/קנדה/מקסיקו</td><td></td><td></td></tr>
+                    <tr><td>מונדיאל 2026</td><td>ארה"ב/קנדה/מקסיקו</td><td></td><td></td></tr>
                     <tr><td>יורו 2024</td><td>גרמניה</td><td>ספרד</td><td>יגאל</td></tr>
                     <tr><td>מונדיאל 2022</td><td>קטאר</td><td>ארגנטינה</td><td>ניק</td></tr>
                     <tr><td>יורו 2020</td><td>אירופה</td><td>איטליה</td><td>טימור</td></tr>
@@ -391,11 +375,8 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 </div>
 
 <script>
-    // הגדרות כלליות
     const MAIN_SHEET_ID = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
 
-    // --- הזנת נתוני 112 משחקים ---
-    // כאן אתה מעדכן את הנתונים לכל משחק
     const gamesData = [
 	{ id: 1, name:"מקסיקו - דרום אפריקה", date:"2026-06-11T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSd5abCXjH9x-65fDdZ-Br4pj5zXaVviYr9UtxJUaYARKYkaSA/viewform", gid:"1536785101" },
 	{ id: 2, name:"קוריאה הדרומית - צ'כיה", date:"2026-06-12T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSet-GREqQV1EHDwrCneNFjd0Kn50nMFhypgBxeKdfpkjDeitg/viewform", gid:"2074374628" },
@@ -501,56 +482,89 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 	{ id: 102, name:"בית 102 - חוץ 102", date:"2026-07-15T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScBOOYHzRLi3AiKhJhq_SxvHrQWvuyMnNJquhjBPtURR8vWQw/viewform", gid:"619466014" },
 	{ id: 103, name:"בית 103 - חוץ 103", date:"2026-07-19T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfwZfmx_ne1u7GYr9zQQqk666oQkmXy8fwLcTmM5Sa_1ceHoA/viewform", gid:"1686329621" },
 	{ id: 104, name:"בית 104 - חוץ 104", date:"2026-07-19T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScTWHSbzh1jvY3vvwme8iDnf5IfK5zhx5b37-n0zuXZ-Zb1hw/viewform", gid:"1236608923" },
-	];
+    ];
 
-    // יצירת 112 כפתורים (אם המערך למעלה חלקי, נשלים אוטומטית למטרות הדגמה)
+    // ===== initGames עם collapse למשחקים ישנים =====
     function initGames() {
         const container = document.getElementById('games-container');
-    container.innerHTML = '';
-    const now = new Date();
+        container.innerHTML = '';
+        const now = new Date();
 
-    // הגדרות פורמט לתאריך (יום, חודש, שנה, שעה ודקות)
-    const dateOptions = { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    };
+        const dateOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
 
-    for (let i = 1; i <= 104; i++) {
-        const data = gamesData.find(g => g.id === i) || { id: i, name: `משחק ${i}`, date: "2026-06-11T00:00:00", form: "#", gid: "0" };
-        
-        const gameDate = new Date(data.date);
-        const isExpired = now > gameDate;
-        
-        // יצירת מחרוזת תאריך קריאה (למשל: 12/07/2026, 04:00)
-        const dateString = gameDate.toLocaleString('he-IL', dateOptions);
+        // מצא את המשחקים שעברו (פג תוקפם)
+        const expiredGames = gamesData.filter(g => now > new Date(g.date));
+        // טווח 24 השעות האחרונות
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        // מזהי משחקים שעברו אך נמצאים בתוך 24 השעות האחרונות - אלה יישארו גלויים
+        const recentExpiredIds = new Set(
+            expiredGames
+                .filter(g => new Date(g.date) >= twentyFourHoursAgo)
+                .map(g => g.id)
+        );
 
-        const btn = document.createElement('a');
-        btn.className = `game-btn ${isExpired ? 'expired' : 'active'}`;
-        
-        // כאן אנחנו מעדכנים את התצוגה של הכפתור
-        if (isExpired) {
-            btn.innerHTML = `
-                <strong>${data.name}</strong>
-                <div class="game-date">${dateString}</div>
-                <span>סגור - צפה בתוצאות</span>
-            `;
-            btn.onclick = () => openModal(data.gid);
-        } else {
-            btn.innerHTML = `
-                <strong>${data.name}</strong>
-                <div class="game-date">${dateString}</div>
-                <span>שלח הימור</span>
-            `;
-            btn.href = data.form;
-            btn.target = "_blank";
+        // כפתור הצג/הסתר משחקים ישנים
+        const toggleBtn = document.createElement('button');
+        toggleBtn.id = 'toggle-old-games';
+        toggleBtn.textContent = '📂 הצג משחקים ישנים';
+        toggleBtn.style.cssText = 'margin-bottom:15px;background:#e2e8f0;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.9rem;display:block;';
+        toggleBtn.onclick = function() {
+            const hidden = container.querySelectorAll('a.game-btn.expired.collapsed-game');
+            const isHidden = hidden.length > 0 && hidden[0].style.display === 'none';
+            hidden.forEach(el => el.style.display = isHidden ? 'flex' : 'none');
+            toggleBtn.textContent = isHidden ? '📁 הסתר משחקים ישנים' : '📂 הצג משחקים ישנים';
+        };
+        container.appendChild(toggleBtn);
+
+        for (let i = 1; i <= 104; i++) {
+            const data = gamesData.find(g => g.id === i) || { id: i, name: `משחק ${i}`, date: "2026-06-11T00:00:00", form: "#", gid: "0" };
+
+            const gameDate = new Date(data.date);
+            const isExpired = now > gameDate;
+            // collapsed = פג תוקף ולא בטווח 24 השעות האחרונות
+            const isCollapsed = isExpired && !recentExpiredIds.has(data.id);
+
+            const dateString = gameDate.toLocaleString('he-IL', dateOptions);
+
+            const btn = document.createElement('a');
+            btn.className = `game-btn ${isExpired ? 'expired' : 'active'}`;
+
+            if (isExpired) {
+                if (isCollapsed) {
+                    btn.classList.add('collapsed-game');
+                    btn.style.display = 'none';
+                }
+                btn.innerHTML = `
+                    <strong>${data.name}</strong>
+                    <div class="game-date">${dateString}</div>
+                    <span>סגור - צפה בתוצאות</span>
+                `;
+                btn.onclick = () => openModal(data.gid);
+            } else {
+                btn.innerHTML = `
+                    <strong>${data.name}</strong>
+                    <div class="game-date">${dateString}</div>
+                    <span>שלח הימור</span>
+                `;
+                btn.href = data.form;
+                btn.target = "_blank";
+            }
+
+            container.appendChild(btn);
         }
-        
-        container.appendChild(btn);
-		}
-	}
+
+        // הסתר את כפתור ה-toggle אם אין משחקים ישנים בכלל (מעבר ל-24 שעות)
+        const hasCollapsedGames = expiredGames.some(g => !recentExpiredIds.has(g.id));
+        if (!hasCollapsedGames) {
+            toggleBtn.style.display = 'none';
+        }
+    }
 
     // פונקציות המודאל
     function openModal(gid) {
@@ -563,26 +577,23 @@ L – אנגליה, קרואטיה, גאנה, פנמה
         document.getElementById('modal').style.display = 'none';
         document.getElementById('modal-iframe').src = '';
     }
-	
-	function showSection(id, btn) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-}
 
-	
-    // ניווט
+    function showSection(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
+
     const originalShow = showSection;
 
-window.showSection = function(id, btn) {
-    originalShow(id, btn);
-
-    if(id === 'bets' && !window._betsLoaded){
-        loadBetsData();
-        window._betsLoaded = true;
-    }
-}
+    window.showSection = function(id, btn) {
+        originalShow(id, btn);
+        if (id === 'bets' && !window._betsLoaded) {
+            loadBetsData();
+            window._betsLoaded = true;
+        }
+    };
 
     // טיימר
     const targetDate = new Date("June 11, 2026 22:00:00").getTime();
@@ -590,425 +601,423 @@ window.showSection = function(id, btn) {
         const now = new Date().getTime();
         const dist = targetDate - now;
         const d = Math.floor(dist / (1000*60*60*24)), h = Math.floor((dist%(1000*60*60*24))/(1000*60*60)), m = Math.floor((dist%(1000*60*60))/(1000*60)), s = Math.floor((dist%(1000*60))/1000);
-        document.getElementById("countdown").innerHTML = dist < 0 ? "המונדיאל החל!" : `עוד ${d} ימים, ${h} שעות, ${m} דקות ו-${s} שניות`;
+        const el = document.getElementById("countdown");
+        if (el) el.innerHTML = dist < 0 ? "המונדיאל החל!" : `עוד ${d} ימים, ${h} שעות, ${m} דקות ו-${s} שניות`;
     }, 1000);
 
     // טעינת טבלת ניקוד
     function fetchScores() {
-    // הצגת הודעת טעינה בטבלה בכל פעם שמרעננים
-    const tableBody = document.getElementById('leaderboard-body');
-    if (tableBody) {
-        tableBody.innerHTML = '<tr><td colspan="1" style="text-align:center;">מרענן נתונים...</td></tr>';
-    }
-
-    const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
-    const gid = '0'; // וודא שזה ה-GID הנכון של גיליון FINAL כפי שמצאת
-    const query = encodeURIComponent('SELECT E, G, F OFFSET 2'); 
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
-
-    // יצירת אלמנט סקריפט חדש
-    const script = document.createElement('script');
-    script.src = url;
-    
-    // מחיקת הסקריפט מה-DOM לאחר הטעינה כדי לשמור על דף נקי
-    script.onload = () => script.remove();
-    
-    document.body.appendChild(script);
-}
-
-// הפונקציה שמקבלת את הנתונים מגוגל ומעבדת אותם ל-HTML
-window.handleResponse = function(response) {
-    const rows = response.table.rows;
-    let html = '';
-
-    const medals = { 1: '🥇', 2: '🥈'};
-    const aiPlayers = ['גרוק', 'צ\'אט', 'קלוד', 'ג\'מיני'];
-
-    // רצים על השורות (עד שורה 27 בגיליון המקורי)
-    for (let i = 0; i < Math.min(rows.length, 25); i++) {
-        const row = rows[i].c;
-        const rank = row[0] ? row[0].v : '';
-        const name = row[1] ? String(row[1].v) : '';
-        const score = row[2] ? row[2].v : '';
-
-        const rankDisplay = medals[rank] || rank;
-        const isAI = aiPlayers.some(ai => name.includes(ai));
-        const nameDisplay = isAI
-            ? `${name} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
-            : name;
-
-        html += `<tr>
-            <td>${rankDisplay}</td>
-            <td>${nameDisplay}</td>
-            <td><strong>${score}</strong></td>
-        </tr>`;
-    }
-    document.getElementById('leaderboard-body').innerHTML = html;
-};
-
-// ============================================================
-// STATS — גרף התקדמות שחקנים
-// ============================================================
-const STATS_GID    = '692862161';
-const CONTROL_GID  = '0';
-
-let statsChartInstance = null;
-
-const PLAYER_COLORS = [
-    '#0046ad','#e63946','#2ec4b6','#f4a261','#6a4c93',
-    '#43aa8b','#f77f00','#277da1','#c77dff','#90be6d',
-    '#f94144','#577590','#ffb703','#d62828','#023e8a',
-    '#52b788','#e07a5f','#3d405b','#81b29a','#f2cc8f','#118ab2'
-];
-
-// שלב א׳ — קרא את A1 מ-GID=0 כדי לדעת עד איזה שלב להציג
-function fetchStats() {
-    const statusEl = document.getElementById('stats-status');
-    const wrapper  = document.getElementById('stats-chart-wrapper');
-    statusEl.style.display = 'block';
-    statusEl.textContent   = 'טוען נתונים...';
-    wrapper.style.display  = 'none';
-    document.getElementById('stats-legend').innerHTML = '';
-
-    const cbName = 'statsCtrlCb_' + Date.now();
-    const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
-              + `?tq=${encodeURIComponent('SELECT A LIMIT 1')}`
-              + `&gid=${CONTROL_GID}&tqx=responseHandler:${cbName}&headers=0`;
-
-    window[cbName] = function(response) {
-        delete window[cbName];
-        try {
-            const val = response.table.rows[0].c[0].v;
-			const stage = String(Number.isInteger(val) ? val : parseFloat(val) === Math.floor(parseFloat(val)) ? Math.floor(parseFloat(val)) : val).trim();
-			fetchStatsData(stage);
-        } catch(e) {
-            statusEl.textContent = 'שגיאה בטעינת שלב נוכחי: ' + e.message;
+        const tableBody = document.getElementById('leaderboard-body');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">מרענן נתונים...</td></tr>';
         }
+
+        const sheetId = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
+        const gid = '0';
+        const query = encodeURIComponent('SELECT E, G, F OFFSET 2');
+        const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=${query}&gid=${gid}&tqx=responseHandler:handleResponse`;
+
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = () => script.remove();
+        document.body.appendChild(script);
+    }
+
+    window.handleResponse = function(response) {
+        const rows = response.table.rows;
+        let html = '';
+
+        const medals = { 1: '🥇', 2: '🥈' };
+        const aiPlayers = ['גרוק', 'צ\'אט', 'קלוד', 'ג\'מיני'];
+
+        for (let i = 0; i < Math.min(rows.length, 25); i++) {
+            const row = rows[i].c;
+            const rank = row[0] ? row[0].v : '';
+            const name = row[1] ? String(row[1].v) : '';
+            const score = row[2] ? row[2].v : '';
+
+            const rankDisplay = medals[rank] || rank;
+            const isAI = aiPlayers.some(ai => name.includes(ai));
+            const nameDisplay = isAI
+                ? `${name} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
+                : name;
+
+            html += `<tr>
+                <td>${rankDisplay}</td>
+                <td>${nameDisplay}</td>
+                <td><strong>${score}</strong></td>
+            </tr>`;
+        }
+        document.getElementById('leaderboard-body').innerHTML = html;
     };
-    injectScript(url, cbName, statusEl, 'שגיאת רשת — שלב נוכחי');
-}
 
-// שלב ב׳ — קרא את כל טבלת הניקוד
-function fetchStatsData(currentStage) {
-    const statusEl = document.getElementById('stats-status');
-    statusEl.textContent = `שלב נוכחי: "${currentStage}" — טוען ניקוד...`;
+    // ============================================================
+    // STATS
+    // ============================================================
+    const STATS_GID   = '692862161';
+    const CONTROL_GID = '0';
 
-    const cbName = 'statsDataCb_' + Date.now();
-    // שינוי: הוספת OFFSET 0 במפורש ו-headers=1 כדי לקבל את שורה 1 כנתונים
-    const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
-              + `?tq=${encodeURIComponent('SELECT * LIMIT 213 OFFSET 0')}`
-              + `&gid=${STATS_GID}&tqx=responseHandler:${cbName}&headers=1`;
+    let statsChartInstance = null;
 
-    window[cbName] = function(response) {
-        delete window[cbName];
-        try {
-            processStatsDataV2(response, currentStage);
-        } catch(e) {
-            statusEl.textContent = 'שגיאה בעיבוד נתונים: ' + e.message;
-            console.error(e);
-        }
-    };
-    injectScript(url, cbName, statusEl, 'שגיאת רשת — טבלת ניקוד');
-}
+    const PLAYER_COLORS = [
+        '#0046ad','#e63946','#2ec4b6','#f4a261','#6a4c93',
+        '#43aa8b','#f77f00','#277da1','#c77dff','#90be6d',
+        '#f94144','#577590','#ffb703','#d62828','#023e8a',
+        '#52b788','#e07a5f','#3d405b','#81b29a','#f2cc8f','#118ab2'
+    ];
 
-// שלב ג׳ — עבד נתונים ובנה גרף
-function processStatsDataV2(response, currentStage) {
-    const statusEl = document.getElementById('stats-status');
-    const wrapper  = document.getElementById('stats-chart-wrapper');
+    function fetchStats() {
+        const statusEl = document.getElementById('stats-status');
+        const wrapper  = document.getElementById('stats-chart-wrapper');
+        statusEl.style.display = 'block';
+        statusEl.textContent   = 'טוען נתונים...';
+        wrapper.style.display  = 'none';
+        document.getElementById('stats-legend').innerHTML = '';
 
-    // כאשר headers=1, Google שולח את שמות העמודות ב-response.table.cols
-    const cols = response.table.cols;
-    const rows = response.table.rows;
+        const cbName = 'statsCtrlCb_' + Date.now();
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+                  + `?tq=${encodeURIComponent('SELECT A LIMIT 1')}`
+                  + `&gid=${CONTROL_GID}&tqx=responseHandler:${cbName}&headers=0`;
 
-    console.log('cols:', JSON.stringify(cols));
-    console.log('rows[0]:', JSON.stringify(rows[0]));
-
-    // שמות שחקנים מגיעים מ-cols (מאינדקס 1 ואילך, כי עמודה 0 = מספר שלב)
-    const players = [];
-    for (let col = 1; col < cols.length; col++) {
-        const label = cols[col].label;
-        if (label && label.trim() !== '') {
-            players.push({ name: label.trim(), col });
-        }
+        window[cbName] = function(response) {
+            delete window[cbName];
+            try {
+                const val = response.table.rows[0].c[0].v;
+                const stage = String(Number.isInteger(val) ? val : parseFloat(val) === Math.floor(parseFloat(val)) ? Math.floor(parseFloat(val)) : val).trim();
+                fetchStatsData(stage);
+            } catch(e) {
+                statusEl.textContent = 'שגיאה בטעינת שלב נוכחי: ' + e.message;
+            }
+        };
+        injectScript(url, cbName, statusEl, 'שגיאת רשת — שלב נוכחי');
     }
 
-    if (players.length === 0) { 
-        statusEl.textContent = 'לא נמצאו שמות שחקנים — בדוק console'; 
-        return; 
+    function fetchStatsData(currentStage) {
+        const statusEl = document.getElementById('stats-status');
+        statusEl.textContent = `שלב נוכחי: "${currentStage}" — טוען ניקוד...`;
+
+        const cbName = 'statsDataCb_' + Date.now();
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+                  + `?tq=${encodeURIComponent('SELECT * LIMIT 213 OFFSET 0')}`
+                  + `&gid=${STATS_GID}&tqx=responseHandler:${cbName}&headers=1`;
+
+        window[cbName] = function(response) {
+            delete window[cbName];
+            try {
+                processStatsDataV2(response, currentStage);
+            } catch(e) {
+                statusEl.textContent = 'שגיאה בעיבוד נתונים: ' + e.message;
+                console.error(e);
+            }
+        };
+        injectScript(url, cbName, statusEl, 'שגיאת רשת — טבלת ניקוד');
     }
 
-    // שורות ניקוד: rows[0], rows[2], rows[4]... (שורות 3,5,7 בגיליון — כי headers=1 בלע שורה 1)
-    // שורה 2 בגיליון (ריקה) = rows[0], שורה 3 = rows[1]... תלוי במבנה
-    // נסנן שורות שיש להן ערך בעמודה A
-    const scoreRows = [];
-    let foundStop = false;
+    function processStatsDataV2(response, currentStage) {
+        const statusEl = document.getElementById('stats-status');
+        const wrapper  = document.getElementById('stats-chart-wrapper');
 
-    for (let ri = 0; ri < rows.length; ri++) {
-        const row = rows[ri];
-        if (!row || !row.c || !row.c[0] || row.c[0].v === null) continue;
-        const rawVal = row.c[0].v;
-		const label = typeof rawVal === 'number' 
-			? String(Number.isInteger(rawVal) ? rawVal : Math.round(rawVal))
-			: String(rawVal).trim();
-		if (label === '' || label === 'null') continue;
-        scoreRows.push({ label, cells: row.c });
-        if (String(label).trim() === String(currentStage).trim()) { foundStop = true; break; }
-    }
+        const cols = response.table.cols;
+        const rows = response.table.rows;
 
-    if (scoreRows.length === 0) { statusEl.textContent = 'אין ניקוד להצגה עדיין'; return; }
-
-    const labels   = scoreRows.map(r => r.label);
-    const datasets = players.map((player, pi) => ({
-        label:           player.name,
-        data:            scoreRows.map(sr => {
-                             const c = sr.cells[player.col];
-                             return (c && c.v !== null) ? Number(c.v) : null;
-                         }),
-        borderColor:     PLAYER_COLORS[pi % PLAYER_COLORS.length],
-        backgroundColor: PLAYER_COLORS[pi % PLAYER_COLORS.length] + '18',
-        borderWidth:     2.5,
-        pointRadius:     5,
-        pointHoverRadius:8,
-        tension:         0.35,
-        fill:            false,
-        spanGaps:        true,
-    }));
-
-    buildLegend(players);
-    buildChart(labels, datasets);
-
-    document.getElementById('stats-stage').textContent =
-        `📍 שלב נוכחי: ${currentStage}` +
-        (foundStop ? '' : ' (שלב לא נמצא)');
-
-    statusEl.style.display = 'none';
-    wrapper.style.display  = 'block';
-}
-
-// מקרא אינטראקטיבי
-function buildLegend(players) {
-    const legendEl = document.getElementById('stats-legend');
-    legendEl.innerHTML = '';
-    players.forEach((player, pi) => {
-        const color = PLAYER_COLORS[pi % PLAYER_COLORS.length];
-        const btn   = document.createElement('button');
-        btn.textContent    = player.name;
-        btn.dataset.idx    = pi;
-        btn.dataset.active = 'true';
-        btn.style.cssText  =
-            `background:${color}20;border:2px solid ${color};color:${color};` +
-            `padding:5px 13px;border-radius:20px;cursor:pointer;` +
-            `font-size:0.85rem;font-family:inherit;font-weight:700;` +
-            `transition:opacity 0.2s;white-space:nowrap;`;
-        btn.onclick = () => togglePlayer(btn, pi);
-        legendEl.appendChild(btn);
-    });
-}
-
-function togglePlayer(btn, idx) {
-    if (!statsChartInstance) return;
-    const visible = statsChartInstance.isDatasetVisible(idx);
-    visible ? statsChartInstance.hide(idx) : statsChartInstance.show(idx);
-    btn.style.opacity    = visible ? '0.3' : '1';
-    btn.dataset.active   = visible ? 'false' : 'true';
-}
-
-function toggleAllPlayers(show) {
-    if (!statsChartInstance) return;
-    document.querySelectorAll('#stats-legend button').forEach(btn => {
-        const idx = parseInt(btn.dataset.idx);
-        show ? statsChartInstance.show(idx) : statsChartInstance.hide(idx);
-        btn.style.opacity  = show ? '1' : '0.3';
-        btn.dataset.active = show ? 'true' : 'false';
-    });
-}
-
-// בניית הגרף
-function buildChart(labels, datasets) {
-    if (statsChartInstance) { statsChartInstance.destroy(); statsChartInstance = null; }
-
-    statsChartInstance = new Chart(document.getElementById('statsChart'), {
-        type: 'line',
-        data: { labels, datasets },
-        options: {
-            responsive:          true,
-            maintainAspectRatio: false,
-            interaction:         { mode: 'index', intersect: false },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    rtl:             true,
-                    textDirection:   'rtl',
-                    backgroundColor: 'rgba(255,255,255,0.97)',
-                    titleColor:      '#1e293b',
-                    bodyColor:       '#334155',
-                    borderColor:     '#e2e8f0',
-                    borderWidth:     1,
-                    padding:         12,
-                    callbacks: {
-                        // מיון השחקנים לפי ניקוד בנקודה הנוכחית
-                        beforeBody: function(items) {
-                            items.sort((a, b) => b.parsed.y - a.parsed.y);
-                        },
-                        label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} נק'`
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { font: { family: 'Assistant', size: 11 }, color: '#64748b', maxRotation: 45 },
-                    grid:  { color: '#f1f5f9' }
-                },
-                y: {
-                    ticks: { font: { family: 'Assistant', size: 11 }, color: '#64748b' },
-                    grid:  { color: '#f1f5f9' },
-                    beginAtZero: true
-                }
+        const players = [];
+        for (let col = 1; col < cols.length; col++) {
+            const label = cols[col].label;
+            if (label && label.trim() !== '') {
+                players.push({ name: label.trim(), col });
             }
         }
-    });
-}
 
-// עזר: הזרקת סקריפט JSONP
-function injectScript(url, cbName, statusEl, errMsg) {
-    const s    = document.createElement('script');
-    s.src      = url;
-    s.onerror  = () => { statusEl.textContent = errMsg; delete window[cbName]; s.remove(); };
-    s.onload   = () => s.remove();
-    document.body.appendChild(s);
-}
+        if (players.length === 0) {
+            statusEl.textContent = 'לא נמצאו שמות שחקנים — בדוק console';
+            return;
+        }
 
-// טעינה אוטומטית בכניסה לטאב (פעם ראשונה בלבד)
-const _origShowSection = window.showSection || showSection;
-window.showSection = function(id, btn) {
-    _origShowSection(id, btn);
-    if (id === 'stats' && !statsChartInstance) fetchStats();
-};
+        const scoreRows = [];
+        let foundStop = false;
+
+        for (let ri = 0; ri < rows.length; ri++) {
+            const row = rows[ri];
+            if (!row || !row.c || !row.c[0] || row.c[0].v === null) continue;
+            const rawVal = row.c[0].v;
+            const label = typeof rawVal === 'number'
+                ? String(Number.isInteger(rawVal) ? rawVal : Math.round(rawVal))
+                : String(rawVal).trim();
+            if (label === '' || label === 'null') continue;
+            scoreRows.push({ label, cells: row.c });
+            if (String(label).trim() === String(currentStage).trim()) { foundStop = true; break; }
+        }
+
+        if (scoreRows.length === 0) { statusEl.textContent = 'אין ניקוד להצגה עדיין'; return; }
+
+        const labels = scoreRows.map(r => r.label);
+
+        // עבור כל שלב, חשב את המיקום (rank) של כל שחקן לפי הניקוד הגולמי שלו
+        // מיקום 1 = הניקוד הגבוה ביותר באותו שלב
+        const rawScoresByPlayer = players.map(player =>
+            scoreRows.map(sr => {
+                const c = sr.cells[player.col];
+                return (c && c.v !== null) ? Number(c.v) : null;
+            })
+        );
+
+        const ranksByPlayer = players.map(() => []);
+        for (let stageIdx = 0; stageIdx < scoreRows.length; stageIdx++) {
+            // אסוף את כל הניקודים הקיימים בשלב הזה, ממוין מהגבוה לנמוך
+            const entries = players
+                .map((player, pi) => ({ pi, score: rawScoresByPlayer[pi][stageIdx] }))
+                .filter(e => e.score !== null)
+                .sort((a, b) => b.score - a.score);
+
+            // קביעת מיקום עם טיפול בשוויון (אותו ניקוד = אותו מיקום)
+            let rank = 0;
+            let prevScore = null;
+            entries.forEach((e, idx) => {
+                if (e.score !== prevScore) { rank = idx + 1; prevScore = e.score; }
+                ranksByPlayer[e.pi][stageIdx] = rank;
+            });
+
+            // שחקנים בלי ניקוד באותו שלב - אין מיקום
+            players.forEach((player, pi) => {
+                if (ranksByPlayer[pi][stageIdx] === undefined) ranksByPlayer[pi][stageIdx] = null;
+            });
+        }
+
+        const datasets = players.map((player, pi) => ({
+            label:           player.name,
+            data:            ranksByPlayer[pi],
+            rawScores:       rawScoresByPlayer[pi],
+            borderColor:     PLAYER_COLORS[pi % PLAYER_COLORS.length],
+            backgroundColor: PLAYER_COLORS[pi % PLAYER_COLORS.length] + '18',
+            borderWidth:     2.5,
+            pointRadius:     5,
+            pointHoverRadius:8,
+            tension:         0.35,
+            fill:            false,
+            spanGaps:        true,
+        }));
+
+        buildLegend(players);
+        buildChart(labels, datasets);
+
+        document.getElementById('stats-stage').textContent =
+            `📍 שלב נוכחי: ${currentStage}` +
+            (foundStop ? '' : ' (שלב לא נמצא)');
+
+        statusEl.style.display = 'none';
+        wrapper.style.display  = 'block';
+    }
+
+    function buildLegend(players) {
+        const legendEl = document.getElementById('stats-legend');
+        legendEl.innerHTML = '';
+        players.forEach((player, pi) => {
+            const color = PLAYER_COLORS[pi % PLAYER_COLORS.length];
+            const btn   = document.createElement('button');
+            btn.textContent    = player.name;
+            btn.dataset.idx    = pi;
+            btn.dataset.active = 'true';
+            btn.style.cssText  =
+                `background:${color}20;border:2px solid ${color};color:${color};` +
+                `padding:5px 13px;border-radius:20px;cursor:pointer;` +
+                `font-size:0.85rem;font-family:inherit;font-weight:700;` +
+                `transition:opacity 0.2s;white-space:nowrap;`;
+            btn.onclick = () => togglePlayer(btn, pi);
+            legendEl.appendChild(btn);
+        });
+    }
+
+    function togglePlayer(btn, idx) {
+        if (!statsChartInstance) return;
+        const visible = statsChartInstance.isDatasetVisible(idx);
+        visible ? statsChartInstance.hide(idx) : statsChartInstance.show(idx);
+        btn.style.opacity  = visible ? '0.3' : '1';
+        btn.dataset.active = visible ? 'false' : 'true';
+    }
+
+    function toggleAllPlayers(show) {
+        if (!statsChartInstance) return;
+        document.querySelectorAll('#stats-legend button').forEach(btn => {
+            const idx = parseInt(btn.dataset.idx);
+            show ? statsChartInstance.show(idx) : statsChartInstance.hide(idx);
+            btn.style.opacity  = show ? '1' : '0.3';
+            btn.dataset.active = show ? 'true' : 'false';
+        });
+    }
+
+    function buildChart(labels, datasets) {
+        if (statsChartInstance) { statsChartInstance.destroy(); statsChartInstance = null; }
+
+        const playerCount = datasets.length;
+
+        statsChartInstance = new Chart(document.getElementById('statsChart'), {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive:          true,
+                maintainAspectRatio: false,
+                interaction:         { mode: 'nearest', intersect: true },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        rtl:             true,
+                        textDirection:   'rtl',
+                        backgroundColor: 'rgba(255,255,255,0.97)',
+                        titleColor:      '#1e293b',
+                        bodyColor:       '#334155',
+                        borderColor:     '#e2e8f0',
+                        borderWidth:     1,
+                        padding:         12,
+                        callbacks: {
+                            label: ctx => {
+                                const rawScores = ctx.dataset.rawScores;
+                                const score = rawScores ? rawScores[ctx.dataIndex] : null;
+                                const scoreText = (score !== null && score !== undefined) ? `${score} נק'` : 'אין נתון';
+                                return ` ${ctx.dataset.label}: מקום ${ctx.parsed.y} (${scoreText})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { font: { family: 'Assistant', size: 11 }, color: '#64748b', maxRotation: 45 },
+                        grid:  { color: '#f1f5f9' }
+                    },
+                    y: {
+                        reverse: true,
+                        min: 1,
+                        max: playerCount,
+                        ticks: {
+                            stepSize: 1,
+                            font: { family: 'Assistant', size: 11 },
+                            color: '#64748b',
+                            callback: function(value) {
+                                return Number.isInteger(value) ? `מקום ${value}` : '';
+                            }
+                        },
+                        grid:  { color: '#f1f5f9' }
+                    }
+                }
+            }
+        });
+    }
+
+    function injectScript(url, cbName, statusEl, errMsg) {
+        const s   = document.createElement('script');
+        s.src     = url;
+        s.onerror = () => { statusEl.textContent = errMsg; delete window[cbName]; s.remove(); };
+        s.onload  = () => s.remove();
+        document.body.appendChild(s);
+    }
+
+    const _origShowSection = window.showSection || showSection;
+    window.showSection = function(id, btn) {
+        _origShowSection(id, btn);
+        if (id === 'stats' && !statsChartInstance) fetchStats();
+    };
 
     // הפעלה ראשונית
     initGames();
     fetchScores();
-	
-	const BETS_GID = '1559954067';
 
-// פונקציה לשליפת נתונים מטווח
-function fetchRange(range, cbName) {
-    const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
-        + `?tq=${encodeURIComponent('SELECT *')}`
-        + `&range=${range}`
-        + `&gid=${BETS_GID}`
-        + `&tqx=responseHandler:${cbName}`;
+    // ============================================================
+    // BETS
+    // ============================================================
+    const BETS_GID = '1559954067';
 
-    const s = document.createElement('script');
-    s.src = url;
-    document.body.appendChild(s);
-}
+    function fetchRange(range, cbName) {
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT *')}`
+            + `&range=${range}`
+            + `&gid=${BETS_GID}`
+            + `&tqx=responseHandler:${cbName}`;
 
-// ================================
-// בניית טבלה עם כותרות!
-// ================================
-function buildTable(title, headers, response) {
-    let html = `<div class="card"><h3>${title}</h3><table>`;
-
-    // כותרות
-    html += "<thead><tr>";
-    headers.forEach(h => {
-        html += `<th>${h}</th>`;
-    });
-    html += "</tr></thead>";
-
-    html += "<tbody>";
-
-    const rows = response.table.rows;
-
-    rows.forEach(r => {
-        html += "<tr>";
-        r.c.forEach(c => {
-            html += `<td>${c?.v ?? ''}</td>`;
-        });
-        html += "</tr>";
-    });
-
-    html += "</tbody></table></div>";
-    return html;
-}
-
-// ================================
-// טעינת כל הנתונים
-// ================================
-function loadBetsData() {
-    const container = document.getElementById('bets-container');
-    container.innerHTML = 'טוען נתונים...';
-
-    let results = {};
-    let loaded = 0;
-    const TOTAL = 14;
-
-    function done() {
-        loaded++;
-        if (loaded === TOTAL) render();
+        const s = document.createElement('script');
+        s.src = url;
+        document.body.appendChild(s);
     }
 
-    function render() {
-        let html = '';
+    function buildTable(title, headers, response) {
+        let html = `<div class="card"><h3>${title}</h3><table>`;
+        html += "<thead><tr>";
+        headers.forEach(h => { html += `<th>${h}</th>`; });
+        html += "</tr></thead><tbody>";
 
-        // 🏆 4 האחרונות
-        html += buildTable(
-            "🏆 4 האחרונות",
-            ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4"],
-            results.final4
-        );
+        const rows = response.table.rows;
+        rows.forEach(r => {
+            html += "<tr>";
+            r.c.forEach(c => { html += `<td>${c?.v ?? ''}</td>`; });
+            html += "</tr>";
+        });
 
-        // ⚽ מלך שערים
-        html += buildTable(
-            "⚽ מלך שערים",
-            ["משתתף","שחקן"],
-            results.scorer
-        );
+        html += "</tbody></table></div>";
+        return html;
+    }
 
-        // 🏠 בתים
-        const houses = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב'];
+    function loadBetsData() {
+        const container = document.getElementById('bets-container');
+        container.innerHTML = 'טוען נתונים...';
 
-        houses.forEach((h, i) => {
+        let results = {};
+        let loaded = 0;
+        const TOTAL = 14;
+
+        function done() {
+            loaded++;
+            if (loaded === TOTAL) render();
+        }
+
+        function render() {
+            let html = '';
+
             html += buildTable(
-                `🏠 בית ${h}`,
+                "🏆 4 האחרונות",
                 ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4"],
-                results[`house${i}`]
+                results.final4
             );
+
+            html += buildTable(
+                "⚽ מלך שערים",
+                ["משתתף","שחקן"],
+                results.scorer
+            );
+
+            const houses = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב'];
+            houses.forEach((h, i) => {
+                html += buildTable(
+                    `🏠 בית ${h}`,
+                    ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4"],
+                    results[`house${i}`]
+                );
+            });
+
+            container.innerHTML = html;
+        }
+
+        window.cb1 = r => { results.final4 = r; done(); };
+        fetchRange("A183:E207","cb1");
+
+        window.cb2 = r => { results.scorer = r; done(); };
+        fetchRange("I183:J207","cb2");
+
+        const ranges = [
+            "A3:E27","H3:L27",
+            "A33:E57","H33:L57",
+            "A63:E87","H63:L87",
+            "A93:E117","H93:L117",
+            "A123:E147","H123:L147",
+            "A153:E177","H153:L177"
+        ];
+
+        ranges.forEach((range, i) => {
+            const cb = `cb_house_${i}`;
+            window[cb] = r => {
+                results[`house${i}`] = r;
+                done();
+            };
+            fetchRange(range, cb);
         });
-
-        container.innerHTML = html;
     }
-
-    // 4 האחרונות
-    window.cb1 = r => { results.final4 = r; done(); };
-    fetchRange("A183:E207","cb1");
-
-    // מלך שערים
-    window.cb2 = r => { results.scorer = r; done(); };
-    fetchRange("I183:J207","cb2");
-
-    // כל הבתים
-    const ranges = [
-        "A3:E27","H3:L27",
-        "A33:E57","H33:L57",
-        "A63:E87","H63:L87",
-        "A93:E117","H93:L117",
-        "A123:E147","H123:L147",
-        "A153:E177","H153:L177"
-    ];
-
-    ranges.forEach((range, i) => {
-        const cb = `cb_house_${i}`;
-        window[cb] = r => {
-            results[`house${i}`] = r;
-            done();
-        };
-        fetchRange(range, cb);
-    });
-}
-
 </script>
 </body>
-
 </html>
