@@ -791,7 +791,7 @@ L – אנגליה, קרואטיה, גאנה, פנמה
             if (score !== null && score === minScore)                                          emojis.push('💀');
             if (rankDiff !== null && maxRankGain !== null && rankDiff === maxRankGain && maxRankGain > 0) emojis.push('📈');
             if (rankDiff !== null && maxRankLoss !== null && rankDiff === maxRankLoss && maxRankLoss < 0) emojis.push('📉');
-            if (scoreDiff !== null && scoreDiff >= HIGH_SCORE_THRESHOLD)                       emojis.push('🔥');
+            if (scoreDiff !== null && scoreDiff >= HIGH_SCORE_THRESHOLD && scoreDiff <= 8)                       emojis.push('🔥');
 
             const emojiStr = emojis.length ? ` ${emojis.join('')}` : '';
 
