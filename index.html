@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -1102,6 +1103,7 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 			{ column: 3, value: "", color: "#86efac" },
             { column: 4, value: "", color: "#86efac" },
 			{ column: 2, value: "אורוגוואי", color: "#efa286" },
+			{ column: 1, player: "", color: "#efea86" }
         ],
 		"⚽ מלך שערים": [
             { column: 1, value: "", color: "#86efac" },
@@ -1190,10 +1192,16 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 
     const rows = response.table.rows;
     rows.forEach(r => {
+        const playerName = String(r.c[0]?.v ?? '').trim(); // שם המשתתף - עמודה 0
         html += "<tr>";
         r.c.forEach((c, colIndex) => {
             const value = c?.v ?? '';
-            const matchedRule = rules.find(rule => rule.column === colIndex && String(value).trim() === rule.value);
+            const matchedRule = rules.find(rule => {
+                const columnMatches = rule.column === colIndex;
+                const valueMatches  = rule.value === undefined || String(value).trim() === rule.value;
+                const playerMatches = rule.player === undefined || playerName === rule.player;
+                return columnMatches && valueMatches && playerMatches;
+            });
             const style = matchedRule ? ` style="background-color:${matchedRule.color}"` : '';
             html += `<td${style}>${value}</td>`;
         });
@@ -1202,7 +1210,7 @@ L – אנגליה, קרואטיה, גאנה, פנמה
 
     html += "</tbody></table></div>";
     return html;
-	}
+}
 
     function loadBetsData() {
         const container = document.getElementById('bets-container');
