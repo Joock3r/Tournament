@@ -1,1309 +1,1304 @@
+
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matchday — Tournament Predictions</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Manrope:wght@400;500;700;800&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-/* =========================================================
-   DESIGN TOKENS
-   Theme: "Matchday scoreboard" — pitch-night dark by default,
-   amber scoreboard-lamp accent, split-flap signature motif.
-   ========================================================= */
-:root{
-  --bg:#0e1512; --surface:#16211c; --surface-2:#1d2a23; --surface-3:#233229;
-  --border:rgba(237,239,234,.09); --border-strong:rgba(237,239,234,.18);
-  --text:#edefea; --text-dim:#9aa69e; --text-faint:#6b7870;
-  --amber:#ffb020; --amber-dim:#8a611c; --green:#4c9a6a; --green-dim:#2c4636;
-  --red:#e2564f; --red-dim:#4a2723; --blue:#5b8fd6;
-  --radius:10px; --radius-lg:16px;
-  --font-en:'Manrope',sans-serif; --font-he:'Heebo',sans-serif; --font-mono:'Space Mono',monospace;
-  --shadow: 0 8px 24px rgba(0,0,0,.35);
-}
-html[data-theme="light"]{
-  --bg:#eef1ec; --surface:#ffffff; --surface-2:#f5f7f3; --surface-3:#e9ede6;
-  --border:rgba(16,32,26,.1); --border-strong:rgba(16,32,26,.2);
-  --text:#0f1c16; --text-dim:#4d5b53; --text-faint:#7c8a82;
-  --amber-dim:#ffe2ad; --green-dim:#cfe6da; --red-dim:#f6d3d1;
-  --shadow: 0 8px 24px rgba(16,32,26,.08);
-}
-*{box-sizing:border-box; margin:0; padding:0;}
-body{background:var(--bg); color:var(--text); font-family:var(--font-en); transition:background .25s,color .25s;}
-html[dir="rtl"] body{font-family:var(--font-he);}
-.mono{font-family:var(--font-mono);}
-a{color:inherit;}
-button{font-family:inherit; cursor:pointer;}
-input,select{font-family:inherit;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --primary: #0046ad;
+            --accent: #d4af37;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --gray-out: #cbd5e1;
+        }
 
-/* ---------- App shell ---------- */
-.app-header{
-  position:sticky; top:0; z-index:50; background:var(--bg);
-  border-bottom:1px solid var(--border); backdrop-filter:blur(6px);
-}
-.header-top{display:flex; align-items:center; justify-content:space-between; padding:12px 16px; gap:8px;}
-.brand{display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-weight:700; font-size:19px; letter-spacing:.5px; flex-shrink:0; white-space:nowrap;}
-.brand .dot{width:9px; height:9px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber); flex-shrink:0;}
-.header-controls{display:flex; align-items:center; gap:6px; min-width:0;}
-.icon-btn{
-  background:var(--surface); border:1px solid var(--border); color:var(--text);
-  border-radius:8px; padding:7px 10px; font-size:13px; font-weight:600; flex-shrink:0; white-space:nowrap;
-}
-.icon-btn:hover{border-color:var(--border-strong);}
-#gsi-btn-wrap{display:flex; align-items:center; min-width:0;}
-.user-chip{display:flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:4px 10px 4px 4px; min-width:0;}
-html[dir="rtl"] .user-chip{padding:4px 4px 4px 10px;}
-.user-chip img{width:24px; height:24px; border-radius:50%; flex-shrink:0;}
-.user-chip .name{font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:90px;}
-.user-chip .signout{font-size:15px; line-height:1; color:var(--text-faint); flex-shrink:0; padding:2px; cursor:pointer;}
-@media(max-width:480px){
-  .header-top{padding:10px 12px; gap:4px;}
-  .brand{font-size:15px; gap:5px;}
-  .brand .dot{width:7px; height:7px;}
-  .header-controls{gap:4px;}
-  .icon-btn{padding:6px 8px; font-size:11.5px;}
-  .user-chip .name{max-width:46px; font-size:12px;}
-  .user-chip{gap:4px; padding:3px 8px 3px 3px;}
-  html[dir="rtl"] .user-chip{padding:3px 3px 3px 8px;}
-  .user-chip img{width:20px; height:20px;}
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
-.tabs{display:flex; gap:2px; padding:0 16px; overflow-x:auto; scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-.tab-btn{
-  background:none; border:none; color:var(--text-dim); font-weight:700; font-size:13.5px;
-  padding:12px 16px; border-bottom:2px solid transparent; white-space:nowrap; letter-spacing:.2px;
-}
-.tab-btn.active{color:var(--amber); border-bottom-color:var(--amber);}
-.tab-btn:hover:not(.active){color:var(--text);}
+        nav { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        nav button { background: none; border: none; padding: 0.6rem 1rem; cursor: pointer; font-weight: 600; color: #64748b; transition: 0.3s; border-radius: 8px; font-size: 0.95rem; }
+        nav button.active { background: var(--primary); color: white; }
 
-main{max-width:1080px; margin:0 auto; padding:24px 16px 80px;}
-.view{display:none; animation:fadeIn .3s ease;}
-.view.active{display:block;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
 
-.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; margin-bottom:16px;}
-.card-title{font-family:var(--font-mono); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--text-faint); margin-bottom:14px;}
-.section-title{font-size:22px; font-weight:800; margin-bottom:4px;}
-.section-sub{color:var(--text-dim); font-size:14px; margin-bottom:20px;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ---------- Split-flap signature element ---------- */
-.flap-board{display:flex; gap:6px; flex-wrap:wrap; align-items:center; direction:ltr;}
-.flap-group{display:flex; flex-direction:column; align-items:center; gap:6px;}
-.flap-label{font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-faint); font-weight:700;}
-.flap-char{
-  width:34px; height:44px; background:#10231a; border-radius:4px; position:relative; overflow:hidden;
-  display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:700;
-  font-size:24px; color:var(--amber); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
-}
-.flap-char::after{content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:rgba(0,0,0,.5);}
-.flap-char.flip{animation:flip .35s ease;}
-@keyframes flip{0%{transform:rotateX(0);} 50%{transform:rotateX(90deg); opacity:.4;} 100%{transform:rotateX(0); opacity:1;}}
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        h2 { color: var(--primary); margin-bottom: 1.5rem; border-right: 4px solid var(--accent); padding-right: 15px; }
+        
+        .countdown { font-size: 2.2rem; font-weight: 700; color: var(--primary); text-align: right; margin: 1.5rem 0; direction: rtl; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: right; padding: 12px; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; color: var(--primary); }
 
-/* ---------- Leaderboard ---------- */
-.leaderboard{width:100%; border-collapse:collapse;}
-.leaderboard th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-faint); padding:8px 10px; border-bottom:1px solid var(--border); font-weight:700;}
-html[dir="rtl"] .leaderboard th{text-align:right;}
-.leaderboard td{padding:12px 10px; border-bottom:1px solid var(--border); font-size:14px; vertical-align:middle;}
-.leaderboard tr:hover td{background:var(--surface-2);}
-.rank-cell{font-family:var(--font-mono); font-weight:700; width:36px; color:var(--text-dim); direction:ltr;}
-.rank-cell.top1{color:var(--amber);} .rank-cell.top2{color:#c9c9c9;} .rank-cell.top3{color:#c88a4d;}
-.points-cell{font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--amber); text-align:right; direction:ltr;}
-html[dir="rtl"] .points-cell{text-align:left;}
-.form-dots{display:flex; gap:4px;}
-.form-dot{width:9px; height:9px; border-radius:50%;}
-.form-dot.W{background:var(--green);} .form-dot.D{background:var(--text-faint);} .form-dot.L{background:var(--red);}
-.player-name-cell{display:flex; align-items:center; gap:10px; font-weight:600;}
-.avatar{width:28px; height:28px; border-radius:50%; background:var(--surface-3); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--text-dim);}
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .game-btn { padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; font-weight: 600; text-decoration: none; display: flex; flex-direction: column; gap: 5px; }
+        
+        .game-btn.active { background: white; color: var(--primary); border-color: var(--primary); }
+        .game-btn.active:hover { background: var(--primary); color: white; }
+        
+        .game-btn.expired { background: var(--gray-out); color: #64748b; cursor: pointer; border-color: #94a3b8; }
+        .game-btn.expired span { font-size: 0.8rem; font-weight: normal; }
 
-/* ---------- Rules ---------- */
-.rules-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-@media(max-width:720px){.rules-grid{grid-template-columns:1fr;}}
-.rule-table{width:100%; border-collapse:collapse; font-size:13.5px;}
-.rule-table td{padding:7px 4px; border-bottom:1px solid var(--border);}
-.rule-table td:last-child{text-align:right; direction:ltr;}
-html[dir="rtl"] .rule-table td:last-child{text-align:left;}
-.rule-value{display:inline-block; min-width:30px; text-align:center; background:var(--surface-3); color:var(--amber); font-weight:700; font-family:var(--font-mono); font-size:13px; padding:3px 9px; border-radius:6px;}
-.rule-value.negative{color:var(--red);}
-.rule-table .pos-tag{display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; background:var(--surface-3); margin-inline-end:6px;}
-.badge-pos-GK{color:var(--blue);} .badge-pos-DF{color:var(--green);} .badge-pos-CM{color:var(--amber);} .badge-pos-ST{color:var(--red);}
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 90%; max-width: 800px; height: 80%; border-radius: 20px; overflow: hidden; position: relative; }
+        .close-modal { position: absolute; top: 15px; left: 15px; background: #eee; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        #modal-iframe { width: 100%; height: 100%; border: none; }
 
-/* ---------- Forms ---------- */
-.field{margin-bottom:16px;}
-.field label{display:block; font-size:12.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px;}
-.field select, .field input[type=number], .field input[type=text]{
-  width:100%; background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-  padding:10px 12px; border-radius:8px; font-size:14px;
-}
-.field select:focus, .field input:focus{outline:2px solid var(--amber); outline-offset:1px;}
-.podium-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
-@media(max-width:640px){.podium-grid{grid-template-columns:1fr 1fr;}}
-.group-editor{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:10px;}
-.group-editor h4{font-family:var(--font-mono); font-size:12px; color:var(--text-faint); margin-bottom:8px; text-transform:uppercase;}
-.drag-list{list-style:none; display:flex; flex-direction:column; gap:6px;}
-.drag-item{
-  background:var(--surface-3); border:1px solid var(--border); border-radius:8px; padding:9px 12px;
-  display:flex; align-items:center; gap:10px; font-size:13.5px; font-weight:600; cursor:grab;
-}
-.drag-item.dragging{opacity:.4;}
-.drag-handle{color:var(--text-faint); font-size:14px;}
-.drag-pos{font-family:var(--font-mono); font-weight:700; color:var(--amber); width:16px; direction:ltr;}
-.btn{
-  background:var(--amber); color:#1a1408; border:none; padding:11px 22px; border-radius:8px; font-weight:800;
-  font-size:14px; letter-spacing:.3px;
-}
-.btn:hover{filter:brightness(1.08);}
-.btn:disabled{background:var(--surface-3); color:var(--text-faint); cursor:not-allowed;}
-.btn-ghost{background:transparent; border:1px solid var(--border-strong); color:var(--text);}
-.lock-banner{background:var(--red-dim); border:1px solid var(--red); color:var(--text); padding:10px 14px; border-radius:8px; font-size:13.5px; margin-bottom:16px; display:flex; align-items:center; gap:8px;}
-.saved-banner{background:var(--green-dim); border:1px solid var(--green); color:var(--text); padding:10px 14px; border-radius:8px; font-size:13.5px; margin-bottom:16px;}
-
-/* ---------- Games ---------- */
-.game-card{border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:12px; background:var(--surface);}
-.game-meta{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px;}
-.game-teams{display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:14px;}
-.team-name{font-weight:800; font-size:15px; flex:1; text-align:center;}
-.score-inputs{display:flex; align-items:center; gap:10px; direction:ltr;}
-.score-inputs input{width:52px; text-align:center; font-family:var(--font-mono); font-size:20px; font-weight:700; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 4px; color:var(--amber);}
-.score-sep{font-family:var(--font-mono); font-weight:700; color:var(--text-faint);}
-.status-pill{font-size:10px; font-weight:800; padding:3px 8px; border-radius:20px; text-transform:uppercase;}
-.status-scheduled{background:var(--surface-3); color:var(--text-dim);}
-.status-locked{background:var(--red-dim); color:var(--red);}
-.status-final{background:var(--green-dim); color:var(--green);}
-.points-pill{font-family:var(--font-mono); font-weight:700; background:var(--amber-dim); color:var(--amber); padding:3px 10px; border-radius:20px; font-size:12px;}
-
-/* ---------- Stats ---------- */
-canvas{width:100%; height:280px; display:block;}
-.legend{display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;}
-.legend-item{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-dim);}
-.legend-swatch{width:10px; height:10px; border-radius:3px;}
-
-/* ---------- Hall of fame ---------- */
-.hof-item{display:flex; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid var(--border);}
-.hof-year{font-family:var(--font-mono); font-weight:700; font-size:20px; color:var(--amber); width:64px; direction:ltr;}
-.hof-trophy{font-size:22px;}
-.hof-name{font-weight:800; font-size:15px;}
-.hof-sub{font-size:12.5px; color:var(--text-dim);}
-
-.empty-state{text-align:center; padding:40px 20px; color:var(--text-faint);}
-.spinner{width:22px; height:22px; border-radius:50%; border:2px solid var(--border-strong); border-top-color:var(--amber); animation:spin .7s linear infinite; margin:0 auto;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.demo-note{font-size:11.5px; color:var(--text-faint); text-align:center; padding:10px; border-top:1px dashed var(--border); margin-top:10px;}
-
-.md-toast{
-  position:fixed; top:16px; left:50%; transform:translate(-50%,-140%);
-  background:var(--green); color:#0b1a10; font-weight:800; font-size:14px;
-  padding:13px 22px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.35);
-  z-index:200; display:flex; align-items:center; gap:8px; max-width:90vw; text-align:center;
-  transition:transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s; opacity:0;
-}
-.md-toast.error{background:var(--red); color:#2a0d0b;}
-.md-toast.show{transform:translate(-50%,0); opacity:1;}
-.player-pts-red{background:var(--red-dim); color:var(--red);}
-.player-pts-yellow{background:var(--amber-dim); color:var(--amber);}
-.player-pts-green{background:var(--green-dim); color:var(--green);}
-</style>
+        iframe { width: 100%; height: 600px; border: none; border-radius: 12px; }
+		
+        .rules-content h3 { margin: 1.5rem 0 0.5rem; color: var(--text); font-size: 1.2rem; }
+        .rules-content p, .rules-content li { margin-bottom: 0.8rem; font-size: 1.05rem; }
+        .rules-content ul { padding-right: 20px; }
+		
+		.whatsapp-btn { display: inline-block; background: #25D366; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .whatsapp-btn:hover { background: #128C7E; transform: scale(1.05); }
+		
+		#hof table tbody td:last-child { font-weight: bold; }
+    </style>
 </head>
 <body>
 
-<header class="app-header">
-  <div class="header-top">
-    <div class="brand"><span class="dot"></span><span data-i18n="brandName">MATCHDAY</span></div>
-    <div class="header-controls">
-      <button class="icon-btn" id="langToggle">EN</button>
-      <button class="icon-btn" id="themeToggle">🌙</button>
-      <div id="gsi-btn-wrap"></div>
-    </div>
-  </div>
-  <nav class="tabs" id="tabNav"></nav>
-</header>
+<nav id="navbar">
+    <button onclick="showSection('home', this)" class="active">דף הבית</button>
+    <button onclick="showSection('rules', this)">חוקים</button>
+    <button onclick="showSection('bets', this)">הימורים כלליים</button>
+    <button onclick="showSection('games', this)">משחקים</button>
+    <button onclick="showSection('recs', this)">המלצות</button>
+	<button onclick="showSection('stats', this)">סטטיסטיקה</button>
+    <button onclick="showSection('hof', this)">היכל התהילה</button>
+</nav>
 
-<main id="main"></main>
+<div class="container">
+    <div id="home" class="section active">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">טבלת ניקוד מובילים</h3>
+                <button onclick="fetchScores()" style="background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;">
+                    🔄 רענן נתונים
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>דירוג</th>
+                        <th>שם</th>
+                        <th>ניקוד</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr><td colspan="3">טוען נתונים...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="rules" class="section">
+        <div class="card rules-content">
+            <h2>חוקי התחרות</h2>
+            
+            <h3>הימורים כלליים</h3>
+            <ul>
+                <li><strong>הרביעיה הסופית:</strong> על כל משתתף לקבוע את הרביעיה הסופית (זוכה + מקום 2-4).</li>
+                <li>נבחרת אחת מהרביעיה = 6 נק'.</li>
+                <li>שתי נבחרות = 13 נק'.</li>
+                <li>שלוש נבחרות = 25 נק'.</li>
+                <li>כל הרביעיה = 37 נק'.</li>
+                <li><strong>ניחוש האלופה:</strong> בונוס של 14 נקודות נוספות.</li>
+				<li><strong>ניחוש סגנית:</strong> בונוס של 9 נקודות נוספות.</li>
+				<li><strong>ניחוש מדויק מקום 3/4:</strong> בונוס של 6 נקודות נוספות.</li>
+                <li><strong>מלך השערים:</strong> ניחוש נכון מזכה ב-21 נקודות.</li>
+                <li><strong>סדר הבתים:</strong> ניקוד על מיקום מדויק בבית הוא 3 נקודות, ונקודה על מיקום שגוי (מינימום 4, מקסימום 12 לבית).</li>
+            </ul>
+
+            <h3>הימורי שלבים (בתים/נוקאאוט)</h3>
+            <p>הזנת תוצאה עד שעת המשחק בסקר הרלוונטי. הסקר נסגר אוטומטית!</p>
+            <ul>
+                <li>ניתן לערוך את הטופס כל עוד המשחק לא החל.</li>
+                <li>בשלבי הנוקאאוט התוצאה נחשבת ל-90 דקות.</li>
+                <li>במשחקי לילה, התוצאות והטבלאות יתעדכנו בבוקר.</li>
+            </ul>
+
+            <h3>חישוב הניקוד למשחק</h3>
+            <table>
+                <tr><td>כובש שער ראשון</td><td>2 נק'</td></tr>
+                <tr><td>ניחוש תוצאה (1/X/2)</td><td>1 נק'</td></tr>
+                <tr><td>הפרש שערים מדויק</td><td>2 נק'</td></tr>
+                <tr><td>תוצאה מדויקת</td><td>3 נק'</td></tr>
+            </table>
+
+            <h3>פרסים</h3>
+            <p>חלוקת הפרס תלויה במספר המשתתפים (מקום ראשון עד שלישי). הסכום המדויק יעודכן ביום הפתיחה.</p>
+
+            <a href="https://chat.whatsapp.com/CXEZS9aQy6TKUXn3Qdwu1D" class="whatsapp-btn" target="_blank">הצטרפות לקבוצת הווצאפ</a>
+        </div>
+    </div>
+	
+	<div id="stats" class="section">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0;">גרף התקדמות שחקנים</h2>
+                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <button onclick="toggleAllPlayers(true)"  style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הצג הכל</button>
+                    <button onclick="toggleAllPlayers(false)" style="background:#e2e8f0;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;">הסתר הכל</button>
+                    <button onclick="fetchStats()" style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;font-family:inherit;">🔄 רענן</button>
+                </div>
+            </div>
+
+            <div id="stats-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem;direction:rtl;"></div>
+            <div id="stats-status" style="text-align:center;padding:2rem;color:#64748b;">טוען נתונים...</div>
+
+            <div style="position:relative;height:450px;display:none;" id="stats-chart-wrapper">
+                <canvas id="statsChart"></canvas>
+            </div>
+
+            <div id="stats-stage" style="text-align:center;margin-top:1rem;font-size:0.9rem;color:#64748b;font-weight:600;"></div>
+        </div>
+    </div>
+
+    <div id="bets" class="section">
+        <div class="card">
+            <h2>הימורים כלליים</h2>
+            <button onclick="loadBetsData()" 
+                style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;margin-bottom:15px;">
+                🔄 טען נתונים
+            </button>
+            <div id="bets-container">טוען נתונים...</div>
+        </div>
+    </div>
+
+    <div id="games" class="section">
+        <div class="card">
+            <h2>רשימת משחקים לשליחת הימורים</h2>
+            <p style="margin-bottom: 15px;">כפתור כחול = טופס פתוח. כפתור אפור = המשחק החל, לחץ לצפייה בתוצאות.</p>
+            <div class="games-grid" id="games-container"></div>
+        </div>
+    </div>
+
+    <div id="recs" class="section">
+        <div class="card rules-content">
+            <h2>קישורים והמלצות</h2>
+            <ul>
+                <li><a href="https://play.fifa.com/bracket-predictor/brackets" target="_blank">Official FIFA World Cup 2026 Simulator</a></li>
+                <li><a href="https://2026bracket.vercel.app/" target="_blank">FIFA World Cup 2026 Bracket Predictor</a></li>
+                <li><a href="https://fuchibol.app/" target="_blank">FUCHIBOL World Cup 2026 Bracket Predictor</a></li>
+            </ul>
+        </div>
+		
+        <div class="card rules-content prompt-card">
+            <h2>🧠 פרומפט חישוב עבור משחקים בודדים</h2>
+            <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
+            <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
+אתה אנליסט כדורגל מתקדם המתמחה בחיזוי משחקים בינלאומיים, כולל FIFA World Cup 2026.
+המערכת פועלת ככלי חצי-אוטומטי עם זיכרון מתמשך ולמידה עצמית.
+---
+📥 קלט (לפני משחק)
+אני אספק רק:
+נבחרת א׳ + סגל שחקנים זמינים
+נבחרת ב׳ + סגל שחקנים זמינים
+שופט
+✔️ אין צורך לציין פצועים/מורחקים (כבר לא יופיעו בסגל)
+---
+🧠 זיכרון פנימי (חובה לשמור ולעדכן)
+שמור לאורך כל השיחה:
+לכל שחקן: דירוג דינמי, שערים, כובש ראשון, כרטיסים, ציון משחק אחרון (FotMob), כושר נוכחי (Form).
+לכל נבחרת: דירוג Elo דינמי, ממוצע שערים, ממוצע ספיגות, יציבות הרכבים, רצף תוצאות, ביצועים בטורניר.
+לשופטים: ממוצע כרטיסים, רמת מחמירות.
+---
+⚙️ שלבי עבודה:
+1. בניית הרכב (11 חזקים).
+2. דירוג שחקנים: PlayerScore = BaseRating × Form × Discipline × Importance.
+3. חישוב משמעת (Discipline) והשפעת השופט (RefereeFactor).
+4. חוזק קבוצה (TeamStrength) וחישוב xG מותאם.
+5. הסתברויות תוצאה (P) בשיטת רגרסיה לוגיסטית/סימולציה.
+---
+📤 פלט חובה:
+🧠 ניתוח קצר
+📊 הסתברויות (א', תיקו, ב')
+⚽ 3 תוצאות הכי סבירות
+🎯 כובש ראשון
+📉 הסתברויות מיוחדות (0-0, שער עצמי)
+---
+🔄 למידה (אחרי משחק):
+אני אספק תוצאה, כובשים, כרטיסים וציונים. 
+עליך לעדכן את ה-Elo, את דירוגי השחקנים ואת ה-Brier Score לשיפור עצמי של המודל.
+
+⚠️ חוקים: עבוד עם אי-ודאות, שמור על ריאליזם, והשתפר ממשחק למשחק.</pre>
+            </div>
+        </div>
+
+        <div class="card rules-content prompt-card2">
+            <h2>🧠 פרומפט חישוב הימורים כלליים</h2>
+            <p style="margin-bottom: 15px; color: #666;">העתיקו את הטקסט הבא ל-ChatGPT, Claude, Gemini או כל כלי בינה מלאכותי כדי להפוך אותו לאנליסט המונדיאל האישי שלכם:</p>
+            <div class="prompt-container" style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; direction: rtl; text-align: right; max-height: 400px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: inherit; font-size: 0.95em; margin: 0;">
+אתה אנליסט כדורגל מתקדם המתמחה בחיזוי משחקים בינלאומיים, כולל FIFA World Cup 2026.
+בצע סימולציה ריאליסטית ומפורטת של טורניר מונדיאל לפי ההנחיות והנתונים הבאים.
+
+שלב הבתים
+יש 12 בתים (A–L), בכל בית 4 נבחרות.
+עליך:
+לשערך את תוצאות כל המשחקים בכל בית
+לקבוע את טבלת הסיום המלאה לכל בית (מקום 1–4, נקודות, הפרש שערים)
+לקבוע אילו נבחרות ממקום 3 עולות לשלב הבא, כאשר:
+
+לא כל נבחרת ממקום 3 עולה אוטומטית
+עולות רק הנבחרות החזקות ביותר ממקום 3 לפי נקודות, הפרש שערים ושערי זכות
+
+הבתים:
+A – מקסיקו, דרום אפריקה, קוריאה הדרומית, צ'כיה
+B – קנדה, בוסניה, קטאר, שווייץ
+C – ברזיל, מרוקו, האיטי, סקוטלנד
+D – ארצות הברית, פרגוואי, אוסטרליה, טורקיה
+E – גרמניה, קוראסאו, חוף השנהב, אקוודור
+F – הולנד, יפן, שוודיה, תוניסיה
+G – בלגיה, מצרים, איראן, ניו זילנד
+H – ספרד, כף ורדה, ערב הסעודית, אורוגוואי
+I – צרפת, סנגל, עיראק, נורווגיה
+J – ארגנטינה, אלג'יריה, אוסטריה, ירדן
+K – פורטוגל, קונגו, אוזבקיסטן, קולומביה
+L – אנגליה, קרואטיה, גאנה, פנמה
+
+כללי סימולציה
+קח בחשבון:
+איכות הסגל
+כוכבים מובילים
+עומק וטקטיקה
+כושר נוכחי משוער של שחקנים מובילים
+
+נבחרות בכושר טוב מקבלות יתרון קל
+שמור על ריאליזם (הפתעות כן, קיצוניות לא)
+
+שלב הנוקאאוט – סדר ההצלבה (קבוע)
+שלב 32 האחרונות
+מקום ראשון בבית E נגד מקום שלישי מאחד הבתים ABCDF - משחק74
+מקום ראשון בבית I נגד מקום שלישי מאחד הבתים CDFGH - משחק 77
+מקום שני בבית A - מקום שני בבית B - משחק 73
+מקום ראשון בבית F - מקום שני בבית C - משחק 75
+מקום שני בבית K - מקום שני בבית L - משחק 83
+מקום ראשון בבית H - מקום שני בבית J - משחק 84
+מקום ראשון בבית D נגד מקום שלישי מאחד הבתים BEFIJ - משחק 81
+מקום ראשון בבית G נגד מקום שלישי מאחד הבתים AEHIJ - משחק 82
+
+מקום ראשון בבית C - מקום שני בבית F - משחק 76
+מקום שני בבית E - מקום שני בבית I - משחק 78
+מקום ראשון בבית A - מקום שלישי מאחד הבתים CEFHI - משחק 79
+מקום ראשון בבית L נגד מקום שלישי מאחד הבתים EHIJK - משחק 80
+מקום ראשון בבית J נגד מקום שני בבית H - משחק 86
+מקום שני בבית D נגד מקום שני בבית G - משחק 88
+מקום ראשון בבית B נגד מקום שלישי מאחד הבתים EFGIJ - משחק 85
+מקום ראשון בבית K נגד מקום שלישי מאחד הבתים DEIJL - משחק 87
+
+תוודא שאתה לא משבץ אותה נבחרת פעמיים בשלב הזה (מקום שלישי).
+
+שמינית גמר:
+מנצחת משחק 74 - מנצחת משחק 77 - משחק 89
+מנצחת משחק 73 - מנצחת משחק 75 - משחק 90
+מנצחת משחק 83 - מנצחת משחק 84 - משחק 93
+מנצחת משחק 81 - מנצחת משחק 82 - משחק 94
+
+מנצחת משחק 76 - מנצחת משחק 78 - משחק 91
+מנצחת משחק 79 - מנצחת משחק 80 - משחק 92
+מנצחת משחק 86 - מנצחת משחק 88 - משחק 95
+מנצחת משחק 85 - מנצחת משחק 87 - משחק 96
+
+רבע גמר:
+מנצחת משחק 89 - מנצחת משחק 90 - משחק 97
+מנצחת משחק 93 - מנצחת משחק 94 - משחק 98
+
+מנצחת משחק 91 - מנצחת משחק 92 - משחק 99
+מנצחת משחק 95 - מנצחת משחק 96 - משחק 100
+
+חצי גמר:
+מנצחת משחק 99 - מנצחת משחק 100 - משחק 102
+
+מנצחת משחק 97 - מנצחת משחק 98 - משחק 101
+
+משחק על מקום 3:
+מפסידה משחק 101 נגד מפסידה משחק מספר 102 - משחק 103
+
+גמר:
+מנצחת משחק 101 מנצחת משחק 102 משחק 104
+
+אם משחק מסתיים בתיקו:
+הארכה
+פנדלים במידת הצורך
+
+סיכום הטורניר
+בסיום הסימולציה קבע:
+
+🏆 אלופת העולם
+⚽ מלך השערים (כולל מספר שערים)
+⭐ נבחרת שהפתיעה לטובה
+📉 נבחרת שאכזבה ביחס לציפיות
+
+פורמט תשובה
+טבלאות ברורות לשלב הבתים
+פירוט משחקי נוקאאוט לפי שלבים
+ניתוח סופי קצר ומקצועי
+
+⚠️ התייחס לסימולציה כאנליזה מקצועית מבוססת – לא כתוצאה אקראית.</pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="hof" class="section">
+        <div class="card">
+            <h2>היכל התהילה</h2>
+            <table>
+                <thead><tr><th>טורניר</th><th>מארחת</th><th>זוכה</th><th>אלוף ההימורים</th></tr></thead>
+                <tbody>
+                    <tr><td>מונדיאל 2026</td><td>ארה"ב/קנדה/מקסיקו</td><td></td><td></td></tr>
+                    <tr><td>יורו 2024</td><td>גרמניה</td><td>ספרד</td><td>יגאל</td></tr>
+                    <tr><td>מונדיאל 2022</td><td>קטאר</td><td>ארגנטינה</td><td>ניק</td></tr>
+                    <tr><td>יורו 2020</td><td>אירופה</td><td>איטליה</td><td>טימור</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">X</button>
+        <iframe id="modal-iframe" src=""></iframe>
+    </div>
+</div>
 
 <script>
-/* =========================================================
-   ============  1. CONFIG  — edit per tournament  ==========
-   =========================================================
-   Fill this in once per tournament. Team lists, rosters and
-   scoring rules live here in code (per your choice). Games,
-   bets and results live in the Google Sheet below.
-*/
-const CONFIG = {
-  // --- Apps Script Web App URL: the ONLY way this site talks to the Sheet.
-  // The Sheet itself should be fully private (no "anyone with the link") —
-  // the script runs as its owner and decides what each caller may see.
-  // See SETUP.md. ---
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzg9u__7JX1Tw-oodrqohyXP_h5jjFueewGKixkwZnz9rtAIP6rugOP376VuPYiunDb/exec',
+    const MAIN_SHEET_ID = '1E0Lb0Nl0iBytYYY4fAcF6NtX4yjW1MsGwEX9y49OLCc';
 
-  // --- General predictions form closes automatically at this time ---
-  GENERAL_DEADLINE: '2028-06-09T00:00:00+03:00',
+    const gamesData = [
+	{ id: 1, name:"מקסיקו - דרום אפריקה", date:"2026-06-11T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSd5abCXjH9x-65fDdZ-Br4pj5zXaVviYr9UtxJUaYARKYkaSA/viewform", gid:"1536785101" },
+	{ id: 2, name:"קוריאה הדרומית - צ'כיה", date:"2026-06-12T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSet-GREqQV1EHDwrCneNFjd0Kn50nMFhypgBxeKdfpkjDeitg/viewform", gid:"2074374628" },
+	{ id: 3, name:"קנדה - בוסניה", date:"2026-06-12T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSf3hJMdP9dJKRI1ebrV5bTPvylr4pmdRNb0IMEhxU65fdvSuQ/viewform", gid:"1539233900" },
+	{ id: 4, name:"ארצות הברית - פרגוואי", date:"2026-06-13T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSe7Hq8v9bRhXuDIAyaFA3AMQNdWFMkSJmYzn0XKPP4G7OEjWA/viewform", gid:"1691236937" },
+	{ id: 5, name:"קטאר - שוויץ", date:"2026-06-13T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSel_DKD2zFqaocP9eQRhn0JsgDQj1-VSld_Q2ztHm1-Vhub5A/viewform", gid:"742036280" },
+	{ id: 6, name:"ברזיל - מרוקו", date:"2026-06-14T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScqh5UvMc3CWqy0Tef2Kr2d22NTyd3Sid72BeN3PBUj2hjZjg/viewform", gid:"886704294" },
+	{ id: 7, name:"האיטי - סקוטלנד", date:"2026-06-14T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScZQyy5Xs7VdaESTjpLTVcYTUd_sgvF-mZwttNnlmy3Aun9Rg/viewform", gid:"1125549976" },
+	{ id: 8, name:"אוסטרליה - טורקיה", date:"2026-06-14T07:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeaHDcNecXUFjwnoIgAYaS9ODZx4FXEFWaKNMQbk6jF-4VKhQ/viewform", gid:"525679329" },
+	{ id: 9, name:"גרמניה - קוראסאו", date:"2026-06-14T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfItIbYBJC35HcJh5F2PLTWb-lFCiO1DMV7sNH_ZNmjh6YKsQ/viewform", gid:"470408311" },
+	{ id: 10, name:"הולנד - יפן", date:"2026-06-14T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfPieurflVXN_ugLHnKNlX068UN-urLeO8wUEuxqxguR2UKUA/viewform", gid:"1855692759" },
+	{ id: 11, name:"חוף השנהב - אקוודור", date:"2026-06-15T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfHS8J1XsYKevJZ3DV-Yc4sw537GP2vXjw2klv8CPKUqkY1-A/viewform", gid:"2062109867" },
+	{ id: 12, name:"שוודיה - תוניסיה", date:"2026-06-15T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfzWFWybElo41j9FJWJHWDBmHbKc8M_PKih9JhNos2e3n8IXg/viewform", gid:"1509178199" },
+	{ id: 13, name:"ספרד - כף ורדה", date:"2026-06-15T19:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSecM86qNavBRtKRXl6foFMrmEB7O6nAxxtC1M50lYxBCPCjgw/viewform", gid:"558141155" },
+	{ id: 14, name:"בלגיה - מצרים", date:"2026-06-15T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSePAgAx7_AVQ3r4FtwcToSei_P5hjDyfJCZGJ_tBq88dwt-vA/viewform", gid:"1630692531" },
+	{ id: 15, name:"ערב הסעודית - אורוגוואי", date:"2026-06-16T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScYUph2uOKpJ6B5j1WT-DEgsXll-_D0_b_0bGOub49s-VU97w/viewform", gid:"1593752253" },
+	{ id: 16, name:"אירן - ניו זילנד", date:"2026-06-16T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdmrxsM8cyZv-j-jIyIi4jOuHsYVzFHplOZbrWMbyD5pMLhrw/viewform", gid:"587485361" },
+	{ id: 17, name:"צרפת - סנגל", date:"2026-06-16T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdvcZjbTJ5vy5VoKPpXdrGfEFRPOfFSU9VYYCIFkfBsmNvcxQ/viewform", gid:"1448732302" },
+	{ id: 18, name:"עיראק - נורווגיה", date:"2026-06-17T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScovf5R6IT9ECpmLIZKafUpRBUhz4iTLgrys9b8ot9qOiYZKQ/viewform", gid:"2095902526" },
+	{ id: 19, name:"ארגנטינה - אלג'יריה", date:"2026-06-17T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSc6idryfXcxrYUx7yQIN14IFIm_-k2Rw3c4FHobdjG5fYGpjw/viewform", gid:"1284048043" },
+	{ id: 20, name:"אוסטריה - ירדן", date:"2026-06-17T07:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSefd_J0bT7rnbClSW2cXc-KHgJJqGHD5svmvV8PLl7XFgIfWw/viewform", gid:"964713441" },
+	{ id: 21, name:"פורטוגל - קונגו", date:"2026-06-17T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdGKMukR1xDtsJ50zlyYzX2o_HNKk8Zr14-48U6dXTs4jofvg/viewform", gid:"414299318" },
+	{ id: 22, name:"אנגליה - קרואטיה", date:"2026-06-17T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfnql4f5NRBuh6RWZB7STz0uXqbA9A_RrGviKrd1OU4jJBizQ/viewform", gid:"41218134" },
+	{ id: 23, name:"גאנה - פנמה", date:"2026-06-18T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSd7How5ASr-i6bKuFh9xKISXDOVHjw2OcwVQKtClX3MtaGrpw/viewform", gid:"1508337090" },
+	{ id: 24, name:"אוזבקיסטן - קולומביה", date:"2026-06-18T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSf4I1DLmp0gkVL6FPm7Af_9UdBHSP5kJzSa8IdWgvMFul3L2g/viewform", gid:"116311269" },
+	{ id: 25, name:"צ'כיה - דרום אפריקה", date:"2026-06-18T19:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdI6ghHNX0W057tkbeGOlAiI24cqJK5-QhRDzB8Ka7TW3BpPg/viewform", gid:"725992251" },
+	{ id: 26, name:"שוויץ - בוסניה", date:"2026-06-18T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSe0cJi1JKd1zK_njP3TaJvCepsr7_GW7P7UIOFAOP9vR4jY5g/viewform", gid:"1807029403" },
+	{ id: 27, name:"קנדה - קטאר", date:"2026-06-19T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeuVe_aHTLxXedCX9zbSWf1I25ur9Cw88_zFWYOKaX6mt0v8A/viewform", gid:"371488635" },
+	{ id: 28, name:"מקסיקו - קוריאה הדרומית", date:"2026-06-19T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSewXG4XnIsAUWt5IiA7xgrj03A54Buq8e7A7kOXMyEMTz6U8g/viewform", gid:"1877611652" },
+	{ id: 29, name:"ארצות הברית - אוסטרליה", date:"2026-06-19T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeyZr8u1Pvyh9medKZvm04pBPITLoBr1OQ7uDPr7oo6MLDa9Q/viewform", gid:"28487215" },
+	{ id: 30, name:"סקוטלנד - מרוקו", date:"2026-06-20T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfcaFM3B9n26ru48shVW4fqYyBiqGwlAuJe8zWRxH0NxCg_PQ/viewform", gid:"1901284672" },
+	{ id: 31, name:"ברזיל - האיטי", date:"2026-06-20T03:30:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdAwHEAGKY7rfYcal1Liaz-P2PPyYXOBZnpJJGyg-FBRrBJVA/viewform", gid:"972648628" },
+	{ id: 32, name:"טוריקה - פרגוואי", date:"2026-06-20T06:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScHpMuoQ8BIP4s8HVy9JdvqFxQ3fE-iUhqriauR8WO8bDYGAA/viewform", gid:"1056056114" },
+	{ id: 33, name:"הולנד - שוודיה", date:"2026-06-20T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSc6PNiC_hE_zQYof4O82FfNpoOcHoo8TQ8aE1G5FruNoTLkuw/viewform", gid:"1537439317" },
+	{ id: 34, name:"גרמניה - חוף השנהב", date:"2026-06-20T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSce_UuJm2Hl2V0JGul9K4_z92zP4wHN1Hra_YFmuzHKSpDvPA/viewform", gid:"1659390834" },
+	{ id: 35, name:"אקוודור - קוראסאו", date:"2026-06-21T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeHvJh-cexUj4ViF75xTLXi9oIuAcLgyF9tQ7urztnsQp_arQ/viewform", gid:"1927911126" },
+	{ id: 36, name:"תוניסיה - יפן", date:"2026-06-21T07:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeTCYK9gmLZ3i99Cry7tnsWabvARjvnc0nJMVw0Gie6MyaM_g/viewform", gid:"2113110810" },
+	{ id: 37, name:"ספרד - ערב הסעודית", date:"2026-06-21T19:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdCMVOXu3afMLUaB41-cidcwyz48uqPiQZ7cltjQNxhCfbPRw/viewform", gid:"802511285" },
+	{ id: 38, name:"בלגיה - אירן", date:"2026-06-21T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeLmyYGYs_O-yNr_Eyj1MZqFd8PjXU8VFZytG8GN0ixn0pF9g/viewform", gid:"1492583025" },
+	{ id: 39, name:"אורוגוואי - כף ורדה", date:"2026-06-22T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScCbLDZ0eXUFJSkVgriFQUA5gozVs_gboGJHQoEKWcvCigKvQ/viewform", gid:"279629520" },
+	{ id: 40, name:"ניו זילנד - מצרים", date:"2026-06-22T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSerlBtn84E7ip0diJPK4uwzM7Pn8CFuiaLSmsjKqSgh8wsC2A/viewform", gid:"1270516055" },
+	{ id: 41, name:"ארגנטינה - אוסטריה", date:"2026-06-22T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSc1cufzFAps2y6n3SP-GiRX-Ohs8rFOcBTdwN1VGDlrNvB8tw/viewform", gid:"208372636" },
+	{ id: 42, name:"צרפת - עיראק", date:"2026-06-23T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfZFP56qtO-CcUFvNuuNAwHUYITng1rPD6Fss_vv7mssWBh9w/viewform", gid:"310677403" },
+	{ id: 43, name:"נורווגיה - סנגל", date:"2026-06-23T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdOMYsYzH7YjO8rY4kngvouO76LtSEGW87q4a7DtnsTeyuSJg/viewform", gid:"957542553" },
+	{ id: 44, name:"ירדן - אלג'יריה", date:"2026-06-23T06:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSf2XKYTuPZ53AiWBAhpWltxQ_S9q2KRyMDEWVfOCTDuulxxkA/viewform", gid:"512046127" },
+	{ id: 45, name:"פורטוגל - אוזבקיסטן", date:"2026-06-23T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScrDvZEnyuhSQkmb8ToNJSbYfRQErHygFHDdLnr62WyihV7CA/viewform", gid:"1226986166" },
+	{ id: 46, name:"אנגליה - גאנה", date:"2026-06-23T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeyfK8CNUbqCx7VvsQswy6bDzL0KVlyN4YKFyD24sKp2JcgtA/viewform", gid:"918759382" },
+	{ id: 47, name:"פנמה - קרואטיה", date:"2026-06-24T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScWZHfuSdq1Zpt_n2ClrM2yxBr5RM9NS9GqMbXd97Y_mIwV_A/viewform", gid:"1711140323" },
+	{ id: 48, name:"קולומביה - קונגו", date:"2026-06-24T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScSP3EuQ9NvoX-1nRHEKciKJJz1yBY2cNXEbkimKcasgBPwWQ/viewform", gid:"89591147" },
+	{ id: 49, name:"שוויץ - קנדה", date:"2026-06-24T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScqGdCKpaA_kOMiNNX-X6n0l9A90AsGN9UXFlQRbtkS04ZLZQ/viewform", gid:"1937934455" },
+	{ id: 50, name:"בוסניה - קטאר", date:"2026-06-24T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScw7kWUO_PkNEz4sWmmRgF9dLVJIqeQsQwpoWVSTCcAZqXf2g/viewform", gid:"1255453126" },
+	{ id: 51, name:"מרוקו - האיטי", date:"2026-06-25T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSczWCMFRmHCxWuwF66q0u5-Jm8dUiypayoHvVsw_79C1v9Eeg/viewform", gid:"34124255" },
+	{ id: 52, name:"סקוטלנד - ברזיל", date:"2026-06-25T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScCndu4Bt-TFLAWl2ihKnI38qUR-HbxCI6Nt_BxnQZtqcS6aQ/viewform", gid:"1616254164" },
+	{ id: 53, name:"דרום אפריקה - קוריאה הדרומית", date:"2026-06-25T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeC4V_JVraqkwjxLAGXr1XjfUyfhvujfH8MDwQP0HIh9FGsCA/viewform", gid:"1024452288" },
+	{ id: 54, name:"צ'כיה - מקסיקו", date:"2026-06-25T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdw5qNksfuxku75vMyV9ET-clIo8DgzfxZeR6FrrP2hRULnvQ/viewform", gid:"282727527" },
+	{ id: 55, name:"קוראסאו - חוף השנהב", date:"2026-06-25T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeGieU3jm32lfPA7iCybYSiZ5fgMOOnTROixg4BOonxK1pcGA/viewform", gid:"269231432" },
+	{ id: 56, name:"אקוודור - גרמניה", date:"2026-06-25T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeAPBkuWd1mcJWTEpXHI9VtsmX82xTsfE4W2TdD4oucgt1WSQ/viewform", gid:"58184183" },
+	{ id: 57, name:"תוניסיה - הולנד", date:"2026-06-26T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdyj1Ich-_kErjiYbaOnlAMrAuucudqDay4zRCEQRSveGZW0Q/viewform", gid:"1887005940" },
+	{ id: 58, name:"יפן - שוודיה", date:"2026-06-26T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSczkcaO_ylCNSJvVE3H7rem_OeBJu9sVnpmBAa5B919cLuJRQ/viewform", gid:"1555172317" },
+	{ id: 59, name:"טורקיה - ארצות הברית", date:"2026-06-26T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfINRKUYTEdZ4XQRV3Ok2ArG01K1uTWlql6zKA0O9yR-0JJyw/viewform", gid:"952447865" },
+	{ id: 60, name:"פרגוואי - אוסטרליה", date:"2026-06-26T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSerBvtbXf9Ayhhv8L9WFMB0MC4cdQb1Msj3iP3DnbHdOsXwHg/viewform", gid:"1093833561" },
+	{ id: 61, name:"נורווגיה - צרפת", date:"2026-06-26T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScvaHqrKjfbk_g_LS-QpRVWyfFut4R0T63GEFHUziVgWzNhLA/viewform", gid:"1554037591" },
+	{ id: 62, name:"סנגל - עיראק", date:"2026-06-26T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdVe3Dle08znsi7lcGiYPFjztbBV3qsGKZjzJY_AHfjQsA2NA/viewform", gid:"118884024" },
+	{ id: 63, name:"כף ורדה - ערב הסעודית", date:"2026-06-27T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdfyrHsbK75S_a5CCM6bLw0vhGBUHF3HHvQkHoTWPjt-afV9w/viewform", gid:"285958975" },
+	{ id: 64, name:"אורוגוואי - ספרד", date:"2026-06-27T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfWun8CNhYZNdqgQgXnHfM2rlX5dKw_lNKx_EY_TQ8gVI2SHQ/viewform", gid:"809138997" },
+	{ id: 65, name:"ניו זילנד - בלגיה", date:"2026-06-27T06:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfJrMjcgcyJXlGTFeGo0qwKiDDABL-D7Tg63-S0aMW8QFXItw/viewform", gid:"740243513" },
+	{ id: 66, name:"מצרים - אירן", date:"2026-06-27T06:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfqHaYWM-EWAhkWGul5gI-fbrSQKIdtXv6mmTmW08wSCyIJfA/viewform", gid:"2027214597" },
+	{ id: 67, name:"פנמה - אנגליה", date:"2026-06-28T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScVarCnKDdbegwl4g-qzptQni0ngtdpdN6BuFzSDnhn0oYAaQ/viewform", gid:"1032409373" },
+	{ id: 68, name:"קרואטיה - גאנה", date:"2026-06-28T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfap-snFRw4b7Doplvyo_yu4_O28jYB-80hx6V2_DpWZCHpnQ/viewform", gid:"1859868339" },
+	{ id: 69, name:"קולומביה - פורטוגל", date:"2026-06-28T02:30:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSffGlF2rimIz5TdGTCVvTRli44ddbKoPASO69v1Cuv9XIloVw/viewform", gid:"523963107" },
+	{ id: 70, name:"קונגו - אוזבקיסטן", date:"2026-06-28T02:30:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfqeM-zJi2trgQdxbKxFPfBPkvhh5VluHH_o2O1qVm5j3vlZQ/viewform", gid:"1862866816" },
+	{ id: 71, name:"אלג'יריה - אוסטריה", date:"2026-06-28T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdUVYGJphZLk9QQXDzkj2GCKxMh89jWPCu_p8UH2VAQ-79Q2Q/viewform", gid:"1058282590" },
+	{ id: 72, name:"ירדן - ארגנטינה", date:"2026-06-28T05:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSe-8Rfb4nFrXRqINpJf6ckzhsCOggs7orrHPdy8_2CHfTKYoA/viewform", gid:"167054731" },
+	{ id: 73, name:"דרום אפריקה - קנדה", date:"2026-06-28T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeHbAKrKCYd3PUT6iqvwSCaDCesqkLD50Qqbuz8dV4-LPU2Sw/viewform", gid:"1232805378" },
+	{ id: 74, name:"ברזיל - יפן", date:"2026-06-29T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSc-9rlCUWHAEoWDEaUDMYpSPDbLyII2H182Miw079-K04cw0Q/viewform", gid:"1329469407" },
+	{ id: 75, name:"גרמניה - פרגוואי", date:"2026-06-29T23:30:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScPS4MssYXnUfr9KQkDNBZs2tE99R79G0nDZsYhZ0BHsEynVw/viewform", gid:"1589837065" },
+	{ id: 76, name:"הולנד - מרוקו", date:"2026-06-30T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScAoNPObhO3gWLcUELRI-BpaFGMa1zLRDpKEykSod69Ko6-_Q/viewform", gid:"2088524705" },
+	{ id: 77, name:"חוף השנהב - נורווגיה", date:"2026-06-30T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScYFDdORx5Vbo91TGd5NBIGAiWxory_CXy7bxVwRiXGQ1inpA/viewform", gid:"1580605071" },
+	{ id: 78, name:"צרפת - שוודיה", date:"2026-07-01T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeI832OiGBWt2_dnJbbfnhw8pkNURv6szu_44iRJ1i0kPo_uQ/viewform", gid:"206411708" },
+	{ id: 79, name:"מקסיקו - אקוודור", date:"2026-07-01T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSf601wFUiy-SYYtKIHSdQLHZwHnpMIvNaO75ZNFNYikiuXN_A/viewform", gid:"400732493" },
+	{ id: 80, name:"אנגליה - קונגו", date:"2026-07-01T19:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfJLgdUiBWrOgTXOpP9olIRkCUi86pG5ZrU8pO44HtCLCSGKA/viewform", gid:"1878621287" },
+	{ id: 81, name:"בלגיה - סנגל", date:"2026-07-01T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScwYzio85t-vM56nSweIwFyVdzMmtbOTcBT8SR-hVTM0dKk3g/viewform", gid:"2006896959" },
+	{ id: 82, name:"ארצות הברית - בוסניה", date:"2026-07-02T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdQstYXIgFnHnB-oTeDAgW4ag9pCS-D7CK_oOf8MOgIDALwsA/viewform", gid:"1620206190" },
+	{ id: 83, name:"ספרד - אוסטריה", date:"2026-07-02T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScS4DtzXQW8859s76tleUM6Gy5rWcOjXAZGilERQiIudMY2SA/viewform", gid:"1347246254" },
+	{ id: 84, name:"פורטוגל - קרואטיה", date:"2026-07-03T02:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSd3a0471n4zPmNFLGwRdlDfMgzzDfZ2QurtAwY1xt1tv01Ilw/viewform", gid:"1119861529" },
+	{ id: 85, name:"שוויץ - אלג'יריה", date:"2026-07-03T06:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSc6DSKTNIPN1sZJhITh8z9IVLkCKd-GtqznY10C93qyn_OgzQ/viewform", gid:"1077127514" },
+	{ id: 86, name:"אוסטרליה - מצרים", date:"2026-07-03T21:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScumNeQS5-7AbkunkzGXtJgcMwldp_syjEYEgPrZB5kntI6Iw/viewform", gid:"395221964" },
+	{ id: 87, name:"ארגנטינה - כף ורדה", date:"2026-07-04T01:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeY_3UBJsNgNy--wn5M88plAF_RTkxqOW4nqwM2gKMFw4_zFw/viewform", gid:"1456592382" },
+	{ id: 88, name:"קולומביה - גאנה", date:"2026-07-04T04:30:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdRHzR-cczdi7lReys40jXCu5a7-UpN-xojn6iAwKqo1SJp1g/viewform", gid:"1762242826" },
+	{ id: 89, name:"קנדה - מרוקו", date:"2026-07-04T20:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfqIWUUmRxOQqD-MjPU4wZRsM2_kGFfL1hB41m2cCWw9XtTzA/viewform", gid:"1882686907" },
+	{ id: 90, name:"פרגוואי - צרפת", date:"2026-07-05T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScs9hmiib-_ao8tQD0eLYJ-Md1WaqDfo81IWv1iZYr0iFQhcQ/viewform", gid:"1770289332" },
+	{ id: 91, name:"ברזיל - נורווגיה", date:"2026-07-05T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSd5-vOV7d0_GzPLWD5cO1DlWcT4kBkUDirf4pv8k-lqV1CC3Q/viewform", gid:"2016329465" },
+	{ id: 92, name:"מקסיקו - אנגליה", date:"2026-07-06T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScIBr3exNW-gkvSCL63BkjpEvd9OfRG9Xp6UFRh7YAxvQTbeQ/viewform", gid:"1036493281" },
+	{ id: 93, name:"פורטוגל - ספרד", date:"2026-07-06T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdLL6juE7pB34GKy51xkBsUCIOgmrPYXv7QY6eST5F08CisBQ/viewform", gid:"661896910" },
+	{ id: 94, name:"ארצות הברית - בלגיה", date:"2026-07-07T03:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfBGupFyG-xKBKSvmJMezF5i40a3shMwc0z_euVjLJPvDMm5g/viewform", gid:"739391189" },
+	{ id: 95, name:"ארגנטינה - מצרים", date:"2026-07-07T19:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfJwJbqVhYKLByPY7ncEUKcSC6VbsX7H7VYuP_il0QRpdCRUQ/viewform", gid:"1905129492" },
+	{ id: 96, name:"שוויץ - קולומביה", date:"2026-07-07T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfGq6Xp7M6PYpdSxQtR0Zy7ZoePdH7XgNS5SD03q-S3LeDn-Q/viewform", gid:"2064574166" },
+	{ id: 97, name:"צרפת - מרוקו", date:"2026-07-09T23:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfPb5yZoSiTk0QE6IXsTBzIXq87v30cO7I6DfGERUCXMqo5cA/viewform", gid:"529169115" },
+	{ id: 98, name:"בלגיה - ספרד", date:"2026-07-10T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfMsKYxDf3E8-DFKH4GQlmliGYroaF4VllJrpn7DgnlXb08yw/viewform", gid:"803817046" },
+	{ id: 99, name:"אנגליה - נורווגיה", date:"2026-07-12T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScGu1zUJWXiRWN90pYVkN-RZ1_j4WmyJBkYXRgBsPXm0cWvyw/viewform", gid:"891127990" },
+	{ id: 100, name:"שוויץ - ארגנטינה", date:"2026-07-12T04:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSdLEVe2aGkdFCiD_mQ1bMRnr1aoZFJtLg0GL72CNm6sPoXHJw/viewform", gid:"1999147491" },
+	{ id: 101, name:"ספרד - צרפת", date:"2026-07-14T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSeFSYappJGnXi4CiDs34d2T1CtbrAlfnW8--ROS67bmnjGr-Q/viewform", gid:"189825066" },
+	{ id: 102, name:"אנגליה - ארגנטינה", date:"2026-07-15T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScBOOYHzRLi3AiKhJhq_SxvHrQWvuyMnNJquhjBPtURR8vWQw/viewform", gid:"619466014" },
+	{ id: 103, name:"בית 103 - חוץ 103", date:"2026-07-19T00:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLSfwZfmx_ne1u7GYr9zQQqk666oQkmXy8fwLcTmM5Sa_1ceHoA/viewform", gid:"1686329621" },
+	{ id: 104, name:"בית 104 - חוץ 104", date:"2026-07-19T22:00:00", form:"https://docs.google.com/forms/d/e/1FAIpQLScTWHSbzh1jvY3vvwme8iDnf5IfK5zhx5b37-n0zuXZ-Zb1hw/viewform", gid:"1236608923" },
+    ];
 
-  // --- Teams: a stable ID (used everywhere in the Sheet) + display name per language.
-  //     The Sheet, all bets, and all matching logic use the ID only — never the
-  //     display text — so switching language never breaks a saved prediction. ---
-  TEAMS: {
-    germany: { en:'Germany', he:'גרמניה' }, france: { en:'France', he:'צרפת' },
-    england: { en:'England', he:'אנגליה' }, spain: { en:'Spain', he:'ספרד' },
-    italy: { en:'Italy', he:'איטליה' }, portugal: { en:'Portugal', he:'פורטוגל' },
-    netherlands: { en:'Netherlands', he:'הולנד' }, belgium: { en:'Belgium', he:'בלגיה' },
-    croatia: { en:'Croatia', he:'קרואטיה' }, switzerland: { en:'Switzerland', he:'שוויץ' },
-    denmark: { en:'Denmark', he:'דנמרק' }, austria: { en:'Austria', he:'אוסטריה' },
-    turkey: { en:'Turkey', he:'טורקיה' }, ukraine: { en:'Ukraine', he:'אוקראינה' },
-    scotland: { en:'Scotland', he:'סקוטלנד' }, hungary: { en:'Hungary', he:'הונגריה' },
-    serbia: { en:'Serbia', he:'סרביה' }, poland: { en:'Poland', he:'פולין' },
-    czech: { en:'Czech', he:"צ'כיה" }, romania: { en:'Romania', he:'רומניה' },
-    slovakia: { en:'Slovakia', he:'סלובקיה' }, slovenia: { en:'Slovenia', he:'סלובניה' },
-    georgia: { en:'Georgia', he:'גאורגיה' }, albania: { en:'Albania', he:'אלבניה' },
-  },
+    // ===== initGames עם collapse למשחקים ישנים =====
+    function initGames() {
+        const container = document.getElementById('games-container');
+        container.innerHTML = '';
+        const now = new Date();
 
-  // --- Groups & teams (inserted once per tournament) — lists of TEAM IDs ---
-  // NOTE: "turkey" currently appears in BOTH group B and group F below, and
-  // "ukraine" doesn't appear in any group — that's almost certainly a mix-up
-  // (a team can't play in two groups). Double-check this against your real
-  // draw before opening bets; I left the values exactly as you sent them.
-  GROUPS: {
-    A: ['germany', 'france', 'england', 'spain'],
-    B: ['italy', 'croatia', 'albania', 'ukraine'],
-    C: ['portugal', 'switzerland', 'scotland', 'czech'],
-    D: ['netherlands', 'denmark', 'hungary', 'romania'],
-    E: ['georgia', 'austria', 'serbia', 'slovakia'],
-    F: ['belgium', 'turkey', 'poland', 'slovenia'],
-  },
+        const dateOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
 
-  // --- Rosters: teamId -> [{id, en, he, pos}], pos in GK/DF/CM/ST.
-  //     `id` must be unique across the whole tournament (used in GameEvents / bets).
-  //     Placeholder player names below — replace en/he with your real squads;
-  //     the ids (e.g. "germany_gk1") are already unique per team, keep them
-  //     as-is (or rename consistently) so bets and events keep matching. ---
-  ROSTERS: {
-    germany: [
-      {id:'germany_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'germany_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'germany_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'germany_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    france: [
-      {id:'france_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'france_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'france_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'france_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    england: [
-      {id:'england_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'england_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'england_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'england_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    spain: [
-      {id:'spain_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'spain_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'spain_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'spain_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    italy: [
-      {id:'italy_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'italy_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'italy_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'italy_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    portugal: [
-      {id:'portugal_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'portugal_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'portugal_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'portugal_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    netherlands: [
-      {id:'netherlands_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'netherlands_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'netherlands_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'netherlands_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    belgium: [
-      {id:'belgium_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'belgium_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'belgium_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'belgium_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    croatia: [
-      {id:'croatia_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'croatia_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'croatia_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'croatia_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    switzerland: [
-      {id:'switzerland_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'switzerland_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'switzerland_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'switzerland_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    denmark: [
-      {id:'denmark_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'denmark_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'denmark_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'denmark_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    austria: [
-      {id:'austria_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'austria_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'austria_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'austria_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    turkey: [
-      {id:'turkey_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'turkey_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'turkey_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'turkey_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    ukraine: [
-      {id:'ukraine_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'ukraine_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'ukraine_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'ukraine_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    scotland: [
-      {id:'scotland_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'scotland_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'scotland_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'scotland_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    hungary: [
-      {id:'hungary_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'hungary_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'hungary_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'hungary_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    serbia: [
-      {id:'serbia_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'serbia_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'serbia_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'serbia_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    poland: [
-      {id:'poland_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'poland_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'poland_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'poland_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    czech: [
-      {id:'czech_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'czech_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'czech_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'czech_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    romania: [
-      {id:'romania_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'romania_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'romania_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'romania_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    slovakia: [
-      {id:'slovakia_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'slovakia_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'slovakia_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'slovakia_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    slovenia: [
-      {id:'slovenia_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'slovenia_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'slovenia_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'slovenia_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    georgia: [
-      {id:'georgia_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'georgia_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'georgia_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'georgia_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-    albania: [
-      {id:'albania_gk1', en:'Goalkeeper (fill in real name)', he:'שוער (למלא שם אמיתי)', pos:'GK'},
-      {id:'albania_df1', en:'Defender (fill in real name)', he:'מגן (למלא שם אמיתי)', pos:'DF'},
-      {id:'albania_cm1', en:'Midfielder (fill in real name)', he:'קשר (למלא שם אמיתי)', pos:'CM'},
-      {id:'albania_st1', en:'Striker (fill in real name)', he:'חלוץ (למלא שם אמיתי)', pos:'ST'},
-    ],
-  },
+        // מצא את המשחקים שעברו (פג תוקפם)
+        const expiredGames = gamesData.filter(g => now > new Date(g.date));
+        // טווח 24 השעות האחרונות
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        // מזהי משחקים שעברו אך נמצאים בתוך 24 השעות האחרונות - אלה יישארו גלויים
+        const recentExpiredIds = new Set(
+            expiredGames
+                .filter(g => new Date(g.date) >= twentyFourHoursAgo)
+                .map(g => g.id)
+        );
 
-  // --- Scoring rules ---
-  SCORING: {
-    game: { exact: 2, diff: 1, outcome: 2 }, // stack: exact score also satisfies diff+outcome => up to 5
-    groupPosition: 2,    // per team placed in its exact final group position (max 4 teams × 2 = 8 per group)
-    advancingCorrect: 1, // knockout stage: correctly picking which team advances / wins
-    player: {
-      ownGoal: -5,
-      redCard: -3,
-      missedPenalty: -3,
-      cleanSheetGK: 3,
-      goal:   { GK: 5, DF: 3, CM: 1, ST: 0.5 },
-      assist: { GK: 5, DF: 3, CM: 1, ST: 0.5 },
+        // כפתור הצג/הסתר משחקים ישנים
+        const toggleBtn = document.createElement('button');
+        toggleBtn.id = 'toggle-old-games';
+        toggleBtn.textContent = '📂 הצג משחקים ישנים';
+        toggleBtn.style.cssText = 'margin-bottom:15px;background:#e2e8f0;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.9rem;display:block;';
+        toggleBtn.onclick = function() {
+            const hidden = container.querySelectorAll('a.game-btn.expired.collapsed-game');
+            const isHidden = hidden.length > 0 && hidden[0].style.display === 'none';
+            hidden.forEach(el => el.style.display = isHidden ? 'flex' : 'none');
+            toggleBtn.textContent = isHidden ? '📁 הסתר משחקים ישנים' : '📂 הצג משחקים ישנים';
+        };
+        container.appendChild(toggleBtn);
+
+        for (let i = 1; i <= 104; i++) {
+            const data = gamesData.find(g => g.id === i) || { id: i, name: `משחק ${i}`, date: "2026-06-11T00:00:00", form: "#", gid: "0" };
+
+            const gameDate = new Date(data.date);
+            const isExpired = now > gameDate;
+            // collapsed = פג תוקף ולא בטווח 24 השעות האחרונות
+            const isCollapsed = isExpired && !recentExpiredIds.has(data.id);
+
+            const dateString = gameDate.toLocaleString('he-IL', dateOptions);
+
+            const btn = document.createElement('a');
+            btn.className = `game-btn ${isExpired ? 'expired' : 'active'}`;
+
+            if (isExpired) {
+                if (isCollapsed) {
+                    btn.classList.add('collapsed-game');
+                    btn.style.display = 'none';
+                }
+                btn.innerHTML = `
+                    <strong>${data.name}</strong>
+                    <div class="game-date">${dateString}</div>
+                    <span>סגור - צפה בתוצאות</span>
+                `;
+                btn.onclick = () => openModal(data.gid);
+            } else {
+                btn.innerHTML = `
+                    <strong>${data.name}</strong>
+                    <div class="game-date">${dateString}</div>
+                    <span>שלח הימור</span>
+                `;
+                btn.href = data.form;
+                btn.target = "_blank";
+            }
+
+            container.appendChild(btn);
+        }
+
+        // הסתר את כפתור ה-toggle אם אין משחקים ישנים בכלל (מעבר ל-24 שעות)
+        const hasCollapsedGames = expiredGames.some(g => !recentExpiredIds.has(g.id));
+        if (!hasCollapsedGames) {
+            toggleBtn.style.display = 'none';
+        }
     }
-  },
 
-  DEMO_MODE_FALLBACK: true, // if the Sheet can't be reached, show sample data instead of an error
-};
+    // פונקציות המודאל
+    function openModal(gid) {
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/htmlembed?gid=${gid}&range=A1:E50&widget=false&headers=false&chrome=false`;
+        document.getElementById('modal-iframe').src = url;
+        document.getElementById('modal').style.display = 'flex';
+    }
 
-/* =========================================================
-   ============  2. i18n  ====================================
-   ========================================================= */
-const I18N = {
-  en:{ brandName:'MATCHDAY', tab_home:'Home', tab_rules:'Rules', tab_general:'General', tab_games:'Games',
-    tab_stats:'Stats', tab_hof:'Hall of Fame', rank:'Rank', player:'Player', points:'Points', form:'Form',
-    leaderLabel:'Leader', signIn:'Sign in', signOut:'Sign out', exportImage:'Export image',
-    rulesTitle:'How scoring works', rulesGameTitle:'Match score bets', rulesPlayerTitle:'Top player of the game',
-    rulesStageTitle:'Group stage & knockout', ruleGroupPosition:'Exact team position at end of group stage (per team)',
-    ruleGroupPositionNote:'Up to 4 teams × 2 pts = 8 pts per group.', ruleAdvancing:'Correct pick in the knockout stage',
-    ruleExact:'Exact score', ruleDiff:'Correct goal difference', ruleOutcome:'Correct win / draw / loss',
-    ruleOwnGoal:'Own goal', ruleRedCard:'Red card', ruleCleanSheet:'GK clean sheet', ruleMissedPenalty:'Missed penalty',
-    ruleGoal:'Goal scored', ruleAssist:'Assist', ruleStackNote:'Tiers stack — an exact score also earns the goal-difference and outcome points.',
-    positionsLegend:'Positions', posGK:'Goalkeepers', posDF:'Defenders', posCM:'Midfielders', posST:'Strikers / Forwards',
-    generalTitle:'General predictions', generalSub:'Predict the podium, top scorer, top assister, and the finishing order of every group. Locks automatically at the deadline below.',
-    deadline:'Closes', locked:'Predictions are locked', podium:'Final four', rank1:'Champion',rank2:'Runner-up',rank3:'3rd place',rank4:'4th place',
-    revealSub:"Predictions are locked — here's what everyone picked.", noneYet:'No predictions were submitted.',
-    topScorer:'Top goal scorer', topAssist:'Top assister', groupsTitle:'Group finishing order', dragHint:'Drag to reorder',
-    save:'Save predictions', saved:'Saved — you can edit until the deadline.', choose:'Choose…',
-    saving:'Saving…', saveFailed:'Save failed — check the Apps Script deployment (see SETUP.md troubleshooting).',
-    gamesTitle:'Games', gamesSub:'Predict the score and pick your top player before kickoff.',
-    yourScore:'Your score', topPlayerOfGame:'Top player', kickoff:'Kickoff', group:'Group',
-    statusScheduled:'Open', statusLocked:'Locked', statusFinal:'Final', earned:'earned',
-    noOpenGames:'No open games right now.', playedGamesTitle:'Played games', playedGamesSub:"Results, everyone's bets, and match events.",
-    everyoneBets:"Everyone's bets", matchEventsTitle:'Match events', noEventsYet:'No events recorded for this game yet.',
-    advancingShort:'Advancing', advancingLabel:'Team advancing to the next stage',
-    advancingWinnerLabel:'Match winner (including extra time / penalties)',
-    evGoal:'Goal', evAssist:'Assist', evOwnGoal:'Own goal', evRedCard:'Red card', evMissedPenalty:'Missed penalty', evCleanSheet:'Clean sheet',
-    statsTitle:'Stats', statsSub:'Points over time and recent form for every participant.', pointsOverTime:'Points over time',
-    hofTitle:'Hall of Fame', hofSub:'Champions of tournaments past.',
-    worldcup:'World Cup', euro:'Euro', hofChampionTeam:'Champion', runnerUpLabel:'Runner-up',
-    loading:'Loading…', demoNote:'Showing sample data — connect your Google Sheet in CONFIG to go live.',
-    noGames:'No games yet.', emailFirst:'Sign in to place your predictions.', noParticipants:'No participants yet — add rows to the Participants tab in the Sheet.', noHof:'No past champions yet.',
-  },
-  he:{ brandName:'מאצדיי', tab_home:'ראשי', tab_rules:'חוקים', tab_general:'טופס כללי', tab_games:'משחקים',
-    tab_stats:'סטטיסטיקות', tab_hof:'היכל התהילה', rank:'דירוג', player:'שם', points:'נקודות', form:'פורמה',
-    leaderLabel:'מוביל', signIn:'התחברות', signOut:'התנתקות', exportImage:'ייצוא תמונה',
-    rulesTitle:'איך מחשבים ניקוד', rulesGameTitle:'ניחושי תוצאות משחק', rulesPlayerTitle:'שחקן המשחק',
-    rulesStageTitle:'שלב הבתים ופלייאוף', ruleGroupPosition:'מיקום מדויק של נבחרת בסיום שלב הבתים (לכל נבחרת)',
-    ruleGroupPositionNote:"עד 4 נבחרות × 2 נק' = 8 נק' לכל בית.", ruleAdvancing:'ניחוש נכון בשלב הפלייאוף',
-    ruleExact:'תוצאה מדויקת', ruleDiff:'הפרש שערים נכון', ruleOutcome:'ניצחון / תיקו / הפסד נכון',
-    ruleOwnGoal:'שער עצמי', ruleRedCard:'כרטיס אדום', ruleCleanSheet:'שער נקי', ruleMissedPenalty:'החטאת בעיטת עונשין',
-    ruleGoal:'שער', ruleAssist:'בישול', ruleStackNote:'הניקוד מצטבר — תוצאה מדויקת מזכה גם בנקודות ההפרש והתוצאה.',
-    positionsLegend:'תפקידים', posGK:'שוערים', posDF:'הגנה', posCM:'קישור', posST:'התקפה',
-    generalTitle:'ניחושים כלליים', generalSub:'נחשו את הפודיום, מלך השערים, מלך הבישולים, וסדר הסיום בכל בית. הטופס ננעל אוטומטית במועד שלמטה.',
-    deadline:'נסגר בתאריך', locked:'הטופס נעול', podium:'הרביעייה הסופית', rank1:'אלופה',rank2:'מקום שני',rank3:'מקום שלישי',rank4:'מקום רביעי',
-    revealSub:'הניחושים ננעלו — הנה מה שכולם בחרו.', noneYet:'לא הוגשו ניחושים.',
-    topScorer:'מלך שערים', topAssist:'מלך בישולים', groupsTitle:'סדר סיום הבתים', dragHint:'גררו כדי לשנות סדר',
-    save:'שמירת ניחושים', saved:'נשמר — ניתן לערוך עד למועד הסגירה.', choose:'בחירה…',
-    saving:'שומר…', saveFailed:'השמירה נכשלה — בדוק את פריסת ה-Apps Script (ראה פתרון בעיות ב-SETUP.md).',
-    gamesTitle:'משחקים', gamesSub:'נחשו את התוצאה ובחרו את שחקן המשחק לפני הבעיטה הראשונה.',
-    yourScore:'הניחוש שלך', topPlayerOfGame:'שחקן המשחק', kickoff:'שעת התחלה', group:'בית',
-    statusScheduled:'פתוח', statusLocked:'נעול', statusFinal:'הסתיים', earned:'נצברו',
-    noOpenGames:'אין משחקים פתוחים כרגע.', playedGamesTitle:'משחקים ששוחקו', playedGamesSub:'תוצאות, ההימורים של כולם, ואירועי המשחק.',
-    everyoneBets:'ההימורים של כולם', matchEventsTitle:'אירועי המשחק', noEventsYet:'לא הוזנו אירועים למשחק זה עדיין.',
-    advancingShort:'העפלה', advancingLabel:'הנבחרת שמעפילה לשלב הבא',
-    advancingWinnerLabel:'הנבחרת המנצחת במשחק (כולל הארכה / פנדלים)',
-    evGoal:'שער', evAssist:'בישול', evOwnGoal:'שער עצמי', evRedCard:'כרטיס אדום', evMissedPenalty:'החטאת פנדל', evCleanSheet:'שער נקי',
-    statsTitle:'סטטיסטיקות', statsSub:'נקודות לאורך זמן ופורמה אחרונה לכל משתתף.', pointsOverTime:'נקודות לאורך זמן',
-    hofTitle:'היכל התהילה', hofSub:'אלופי הטורנירים הקודמים.',
-    worldcup:'מונדיאל', euro:'יורו', hofChampionTeam:'אלופת הטורניר', runnerUpLabel:'מקום שני',
-    loading:'טוען…', demoNote:'מוצגים נתוני דוגמה — חברו את הגיליון שלכם ב-CONFIG כדי לעלות לאוויר.',
-    noGames:'אין משחקים עדיין.', emailFirst:'התחברו כדי להזין ניחושים.', noParticipants:'עדיין אין משתתפים — הוסיפו שורות לטאב Participants בגיליון.', noHof:'עדיין אין אלופים קודמים.',
-  }
-};
-let LANG = localStorage.getItem('md_lang') || 'en';
-function t(key,...args){ const v = I18N[LANG][key]; return typeof v==='function' ? v(...args) : v; }
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('modal-iframe').src = '';
+    }
 
-/* =========================================================
-   ============  2b. Bilingual display-name helpers  =========
-   Everything stored in the Sheet (teams, players, results) is
-   an ID or an explicit _en/_he pair — never plain display text —
-   so the whole site re-renders correctly in either language
-   without touching stored data.
-   ========================================================= */
-function teamName(teamId){
-  const t = CONFIG.TEAMS[teamId];
-  return t ? (t[LANG] || t.en || teamId) : teamId;
-}
-function allPlayersFlat(){
-  return Object.entries(CONFIG.ROSTERS).flatMap(([teamId, squad]) => squad.map(p => ({...p, teamId})));
-}
-function findPlayer(playerId){ return allPlayersFlat().find(p => p.id === playerId) || null; }
-function playerName(playerIdOrObj){
-  const p = typeof playerIdOrObj === 'object' ? playerIdOrObj : findPlayer(playerIdOrObj);
-  if(!p) return playerIdOrObj;
-  return p[LANG] || p.en || p.id;
-}
-/** Participant display name — Sheet stores name_en/name_he columns per person
- *  (filled in once by whoever manages the tournament); falls back gracefully
- *  if only one language was filled in. */
-function participantName(p){
-  return p['name_'+LANG] || p.name_en || p.name_he || p.name || p.email;
-}
+    function showSection(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
 
-/* =========================================================
-   ============  3. State  ===================================
-   ========================================================= */
-const STATE = { user:null, participants:[], games:[], gameBets:[], generalBets:[], hof:[], gameEvents:[], groupResults:[], demo:false, loaded:false };
+    const originalShow = showSection;
 
-/* =========================================================
-   ============  4. Data layer (Google Sheets)  ==============
-   ========================================================= */
-async function fetchTab(tabName){
-  const email = STATE.user ? STATE.user.email : '';
-  const url = `${CONFIG.APPS_SCRIPT_URL}?tab=${encodeURIComponent(tabName)}&email=${encodeURIComponent(email)}`;
-  const res = await fetch(url);
-  return res.json();
-}
-async function postBet(payload){
-  // Apps Script web app handles auth + writes + server-side lock checks. See Code.gs
-  return fetch(CONFIG.APPS_SCRIPT_URL, {
-    method:'POST', mode:'no-cors', // no-cors: Apps Script doGet/doPost redirect responses aren't readable cross-origin
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(payload)
-  });
-}
-
-async function loadAllData(){
-  try{
-    const [participants, games, gameBets, generalBets, hof, gameEvents, groupResults] = await Promise.all([
-      fetchTab('Participants'), fetchTab('Games'), fetchTab('GameBets'), fetchTab('GeneralBets'), fetchTab('HallOfFame'),
-      fetchTab('GameEvents'), fetchTab('GroupResults'),
-    ]);
-    if(!Array.isArray(participants) || (!participants.length && !games.length)) throw new Error('empty sheet / not configured');
-    Object.assign(STATE, { participants, games, gameBets, generalBets, hof, gameEvents, groupResults, demo:false });
-  }catch(e){
-    if(!CONFIG.DEMO_MODE_FALLBACK) throw e;
-    Object.assign(STATE, demoData());
-    STATE.demo = true;
-  }
-  STATE.loaded = true;
-}
-
-function demoData(){
-  const people = [
-    {en:'Noa Levi', he:'נועה לוי'}, {en:'Itay Ben', he:'איתי בן'}, {en:'Tamir K.', he:'תמיר כ.'},
-    {en:'Roni Shani', he:'רוני שני'}, {en:'Dana Cohen', he:'דנה כהן'}, {en:'Omer Gal', he:'עומר גל'},
-  ];
-  const participants = people.map((n,i) => ({
-    email:`${n.en.split(' ')[0].toLowerCase()}@example.com`, name_en:n.en, name_he:n.he,
-    totalPoints: 34 - i*4 + (i%2), form: JSON.stringify(['W','W','D','L','W'].slice(0, 5-i%3)),
-  }));
-  const games = [
-    {id:'G1', kickoffISO:'2026-06-11T21:00:00+03:00', group:'A', stage:'group', teamA:'team_a1', teamB:'team_a2', status:'final', scoreA:2, scoreB:1, advancingTeam:''},
-    {id:'G2', kickoffISO:'2026-06-12T18:00:00+03:00', group:'A', stage:'group', teamA:'team_a3', teamB:'team_a4', status:'scheduled', scoreA:'', scoreB:''},
-    {id:'G3', kickoffISO:'2026-06-13T21:00:00+03:00', group:'B', stage:'group', teamA:'team_b1', teamB:'team_b2', status:'scheduled', scoreA:'', scoreB:''},
-    {id:'G4', kickoffISO:'2026-07-10T21:00:00+03:00', group:'', stage:'final', teamA:'team_a1', teamB:'team_b1', status:'final', scoreA:1, scoreB:1, advancingTeam:'team_a1'},
-  ];
-  const gameEvents = [
-    {gameId:'G1', team:'team_a1', player:'a1_st1', position:'ST', eventType:'goal', count:1},
-    {gameId:'G1', team:'team_a1', player:'a1_cm1', position:'CM', eventType:'assist', count:1},
-    {gameId:'G1', team:'team_a1', player:'a1_gk1', position:'GK', eventType:'cleanSheet', count:1},
-    {gameId:'G1', team:'team_a2', player:'a2_st1', position:'ST', eventType:'goal', count:1},
-  ];
-  const groupResults = [
-    {group:'A', pos1:'team_a1', pos2:'team_a2', pos3:'team_a3', pos4:'team_a4'},
-  ];
-  const hof = [
-    {year:2022, tournamentType:'worldcup', location_en:'Qatar', location_he:'קטאר',
-     championTeam_en:'Argentina', championTeam_he:'ארגנטינה',
-     winnerName_en:'Tamir K.', winnerName_he:'תמיר כ.', runnerUp_en:'Noa Levi', runnerUp_he:'נועה לוי'},
-    {year:2021, tournamentType:'euro', location_en:'Various (Europe)', location_he:'כל אירופה',
-     championTeam_en:'Italy', championTeam_he:'איטליה',
-     winnerName_en:'Roni Shani', winnerName_he:'רוני שני', runnerUp_en:'Itay Ben', runnerUp_he:'איתי בן'},
-  ];
-  return { participants, games, gameBets:[], generalBets:[], hof, gameEvents, groupResults };
-}
-
-/* =========================================================
-   ============  5. Scoring helpers (client-side, read-only
-   display — authoritative calc happens in Apps Script) =====
-   ========================================================= */
-function computeGameScore(betA, betB, actualA, actualB){
-  if(actualA==='' || actualA==null || actualB==='' || actualB==null) return null;
-  betA=+betA; betB=+betB; actualA=+actualA; actualB=+actualB;
-  let pts = 0;
-  const s = CONFIG.SCORING.game;
-  const outcome = (a,b) => a>b?'W':a<b?'L':'D';
-  if(outcome(betA,betB) === outcome(actualA,actualB)) pts += s.outcome;
-  if((betA-betB) === (actualA-actualB)) pts += s.diff;
-  if(betA===actualA && betB===actualB) pts += s.exact;
-  return pts;
-}
-
-/* =========================================================
-   ============  6. Rendering  ================================
-   ========================================================= */
-const TABS = ['home','rules','general','games','stats','hof'];
-let currentTab = 'home';
-
-function showToast(message, isError){
-  let toast = document.getElementById('mdToast');
-  if(!toast){
-    toast = document.createElement('div');
-    toast.id = 'mdToast';
-    document.body.appendChild(toast);
-  }
-  toast.className = 'md-toast' + (isError ? ' error' : '');
-  toast.textContent = message;
-  toast.style.display = 'flex';
-  void toast.offsetWidth; // restart animation if triggered twice in a row
-  toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => { toast.classList.remove('show'); }, isError ? 4500 : 2600);
-}
-/** Re-fetches ONE tab a few times, spaced out, since Apps Script can take a
- *  few seconds (cold start) to actually commit a write. Merges the fresh
- *  rows into STATE[stateKey] each time. Returns true as soon as checkFn()
- *  finds the just-saved data, false if it never shows up in time. */
-async function pollUntilSaved(tabName, stateKey, checkFn, attempts=5, delayMs=1500){
-  for(let i=0; i<attempts; i++){
-    await new Promise(r => setTimeout(r, delayMs));
-    try{
-      const rows = await fetchTab(tabName);
-      if(Array.isArray(rows)) STATE[stateKey] = rows;
-    }catch(e){ /* transient network hiccup — just try again next loop */ }
-    if(checkFn()) return true;
-  }
-  return false;
-}
-
-function renderShell(){
-  document.documentElement.lang = LANG;
-  document.documentElement.dir = LANG==='he' ? 'rtl' : 'ltr';
-  document.getElementById('langToggle').textContent = LANG==='he' ? 'עב' : 'EN';
-  document.getElementById('tabNav').innerHTML = TABS.map(id =>
-    `<button class="tab-btn ${id===currentTab?'active':''}" data-tab="${id}">${t('tab_'+id)}</button>`
-  ).join('');
-  document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => {
-    currentTab = b.dataset.tab;
-    renderAll();
-    loadAllData().then(renderAll); // re-sync with the server on every tab switch
-  });
-}
-
-function renderAll(){
-  renderShell();
-  const main = document.getElementById('main');
-  const renderers = { home:renderHome, rules:renderRules, general:renderGeneral, games:renderGames, stats:renderStats, hof:renderHof };
-  main.innerHTML = renderers[currentTab]();
-  if(currentTab==='home'){ animateFlaps(); const eb = document.getElementById('exportImgBtn'); if(eb) eb.onclick = exportLeaderboardImage; }
-  if(currentTab==='general') wireGeneralForm();
-  if(currentTab==='games') wireGamesForm();
-  if(currentTab==='stats') drawStatsChart();
-}
-
-function demoBanner(){
-  return STATE.demo ? `<div class="demo-note">${t('demoNote')}</div>` : '';
-}
-
-/* ---- HOME ---- */
-function rankedParticipants(){
-  return [...STATE.participants]
-    .map(p => ({...p, displayName: participantName(p), totalPoints:+p.totalPoints || 0, form: safeParse(p.form, [])}))
-    .sort((a,b) => b.totalPoints - a.totalPoints)
-    .map((p,i) => ({...p, rank:i+1}));
-}
-function safeParse(s, fallback){ try{ return typeof s==='string' ? JSON.parse(s) : (s||fallback); }catch{ return fallback; } }
-
-function renderHome(){
-  const ranked = rankedParticipants();
-  if(!ranked.length){
-    const msg = STATE.loaded ? t('noParticipants') : t('loading');
-    return `<div class="card"><div class="empty-state">${STATE.loaded?'':'<div class="spinner"></div><br>'}${msg}</div></div>`;
-  }
-  const leader = ranked[0];
-  const flapChars = String(leader.totalPoints).padStart(3,'0').split('');
-  return `
-  <div class="card">
-    <div class="card-title">${t('leaderLabel')}</div>
-    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-      <div class="flap-group">
-        <div class="flap-board">${flapChars.map(c=>`<div class="flap-char">${c}</div>`).join('')}</div>
-        <div class="flap-label">${t('points')}</div>
-      </div>
-      <div>
-        <div style="font-size:20px; font-weight:800;">${leader.displayName}</div>
-        <div class="form-dots" style="margin-top:8px;">${formDots(leader.form)}</div>
-      </div>
-    </div>
-  </div>
-  <div class="card" id="exportCapture">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px; flex-wrap:wrap;">
-      <div class="mono" style="font-size:11px; color:var(--text-faint); letter-spacing:1px;">🏆 ${t('brandName')} · ${new Date().toLocaleDateString(LANG==='he'?'he-IL':'en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>
-      <button class="icon-btn" id="exportImgBtn" data-export-exclude style="display:flex; align-items:center; gap:5px;">📤 ${t('exportImage')}</button>
-    </div>
-    <table class="leaderboard">
-      <thead><tr><th>${t('rank')}</th><th>${t('player')}</th><th>${t('form')}</th><th style="text-align:right">${t('points')}</th></tr></thead>
-      <tbody>
-        ${ranked.map(p => `
-          <tr>
-            <td class="rank-cell ${p.rank<=3?'top'+p.rank:''}">${medal(p.rank)}${p.rank}</td>
-            <td><div class="player-name-cell"><div class="avatar">${initials(p.displayName)}</div>${p.displayName}</div></td>
-            <td><div class="form-dots">${formDots(p.form)}</div></td>
-            <td class="points-cell">${p.totalPoints}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-    <div data-export-exclude>${demoBanner()}</div>
-  </div>`;
-}
-/** Captures `targetId`'s DOM exactly as rendered and shares/downloads it as
- *  a PNG. Elements marked data-export-exclude (buttons etc.) are omitted. */
-async function exportElementImage(targetId, filename, btn){
-  const target = document.getElementById(targetId);
-  if(!target || !window.html2canvas) return;
-  const originalText = btn ? btn.textContent : null;
-  if(btn){ btn.textContent = '…'; btn.disabled = true; }
-  try{
-    const canvas = await html2canvas(target, {
-      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim(),
-      scale: 2,
-      ignoreElements: el => el.hasAttribute && el.hasAttribute('data-export-exclude'),
-    });
-    canvas.toBlob(async blob => {
-      const file = new File([blob], filename, { type:'image/png' });
-      if(navigator.canShare && navigator.canShare({ files:[file] })){
-        try{ await navigator.share({ files:[file], title:'Matchday' }); if(btn){ btn.textContent = originalText; btn.disabled = false; } return; }catch(e){ /* cancelled/unsupported, fall through to download */ }
-      }
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-      URL.revokeObjectURL(url);
-      if(btn){ btn.textContent = originalText; btn.disabled = false; }
-    });
-  }catch(e){ if(btn){ btn.textContent = originalText; btn.disabled = false; } }
-}
-async function exportLeaderboardImage(){
-  await exportElementImage('exportCapture', 'matchday-leaderboard.png', document.getElementById('exportImgBtn'));
-}
-function medal(rank){ return rank===1?'🥇 ':rank===2?'🥈 ':rank===3?'🥉 ':''; }
-function initials(name){ return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
-function formDots(form){ return (form||[]).map(r => `<span class="form-dot ${r}"></span>`).join(''); }
-function animateFlaps(){ document.querySelectorAll('.flap-char').forEach((el,i) => setTimeout(()=>el.classList.add('flip'), i*90)); }
-
-/* ---- RULES ---- */
-function renderRules(){
-  const s = CONFIG.SCORING;
-  const val = n => `<span class="rule-value ${n<0?'negative':''}">${n}</span>`;
-  const posLabels = { GK:t('posGK'), DF:t('posDF'), CM:t('posCM'), ST:t('posST') };
-  return `
-  <div class="section-title">${t('rulesTitle')}</div>
-  <div class="rules-grid">
-    <div class="card">
-      <div class="card-title">${t('rulesGameTitle')}</div>
-      <table class="rule-table">
-        <tr><td>${t('ruleExact')}</td><td>${val(s.game.exact)}</td></tr>
-        <tr><td>${t('ruleDiff')}</td><td>${val(s.game.diff)}</td></tr>
-        <tr><td>${t('ruleOutcome')}</td><td>${val(s.game.outcome)}</td></tr>
-      </table>
-      <div class="section-sub" style="margin-top:12px; margin-bottom:0;">${t('ruleStackNote')}</div>
-    </div>
-    <div class="card">
-      <div class="card-title">${t('rulesStageTitle')}</div>
-      <table class="rule-table">
-        <tr><td>${t('ruleGroupPosition')}</td><td>${val(s.groupPosition)}</td></tr>
-        <tr><td>${t('ruleAdvancing')}</td><td>${val(s.advancingCorrect)}</td></tr>
-      </table>
-      <div class="section-sub" style="margin-top:12px; margin-bottom:0;">${t('ruleGroupPositionNote')}</div>
-    </div>
-  </div>
-  <div class="rules-grid">
-    <div class="card">
-      <div class="card-title">${t('rulesPlayerTitle')}</div>
-      <table class="rule-table">
-        ${['GK','DF','CM','ST'].map(pos => `<tr><td><span class="pos-tag badge-pos-${pos}">${pos}</span>${t('ruleGoal')}</td><td>${val(s.player.goal[pos])}</td></tr>`).join('')}
-        ${['GK','DF','CM','ST'].map(pos => `<tr><td><span class="pos-tag badge-pos-${pos}">${pos}</span>${t('ruleAssist')}</td><td>${val(s.player.assist[pos])}</td></tr>`).join('')}
-        <tr><td><span class="pos-tag badge-pos-GK">GK</span>${t('ruleCleanSheet')}</td><td>${val(s.player.cleanSheetGK)}</td></tr>
-        <tr><td>${t('ruleOwnGoal')}</td><td>${val(s.player.ownGoal)}</td></tr>
-        <tr><td>${t('ruleRedCard')}</td><td>${val(s.player.redCard)}</td></tr>
-        <tr><td>${t('ruleMissedPenalty')}</td><td>${val(s.player.missedPenalty)}</td></tr>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">${t('positionsLegend')}</div>
-    <div class="rules-grid">
-      ${['GK','DF','CM','ST'].map(pos => `
-        <div style="display:flex; align-items:center; gap:8px; padding:4px 0;">
-          <span class="pos-tag badge-pos-${pos}">${pos}</span><span style="font-size:13.5px;">${posLabels[pos]}</span>
-        </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-/* ---- GENERAL ---- */
-function normEmail(e){ return (e||'').trim().toLowerCase(); }
-function currentGeneralBet(){
-  if(!STATE.user) return null;
-  return STATE.generalBets.find(b => normEmail(b.email) === normEmail(STATE.user.email)) || null;
-}
-function isGeneralLocked(){ return new Date() > new Date(CONFIG.GENERAL_DEADLINE); }
-
-function renderGeneral(){
-  const locked = isGeneralLocked();
-  const existing = currentGeneralBet();
-  const allTeams = Object.values(CONFIG.GROUPS).flat();
-  const allPlayers = allPlayersFlat();
-  const existingGroups = existing ? safeParse(existing.groupsJSON, null) : null;
-
-  if(!STATE.user){
-    return `<div class="section-title">${t('generalTitle')}</div><div class="card"><div class="empty-state">${t('emailFirst')}</div></div>`;
-  }
-  if(locked) return renderGeneralReveal();
-  return `
-  <div class="section-title">${t('generalTitle')}</div>
-  <div class="section-sub">${t('generalSub')}</div>
-  <div class="saved-banner">${t('deadline')}: ${fmtDate(CONFIG.GENERAL_DEADLINE)}</div>
-  <form id="generalForm">
-    <div class="card">
-      <div class="card-title">${t('podium')}</div>
-      <div class="podium-grid">
-        ${[1,2,3,4].map(n => `
-          <div class="field">
-            <label>${t('rank'+n)}</label>
-            <select name="rank${n}" required>
-              <option value="">${t('choose')}</option>
-              ${allTeams.map(teamId => `<option value="${teamId}" ${existing && existing['rank'+n]===teamId ? 'selected':''}>${teamName(teamId)}</option>`).join('')}
-            </select>
-          </div>`).join('')}
-      </div>
-    </div>
-    <div class="card">
-      <div class="podium-grid" style="grid-template-columns:1fr 1fr;">
-        <div class="field">
-          <label>${t('topScorer')}</label>
-          <select name="topScorer" required>
-            <option value="">${t('choose')}</option>
-            ${allPlayers.map(p => `<option value="${p.id}" ${existing && existing.topScorer===p.id?'selected':''}>${playerName(p)} — ${teamName(p.teamId)}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field">
-          <label>${t('topAssist')}</label>
-          <select name="topAssist" required>
-            <option value="">${t('choose')}</option>
-            ${allPlayers.map(p => `<option value="${p.id}" ${existing && existing.topAssist===p.id?'selected':''}>${playerName(p)} — ${teamName(p.teamId)}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">${t('groupsTitle')}</div>
-      <div class="section-sub" style="margin-bottom:12px;">${t('dragHint')}</div>
-      ${Object.entries(CONFIG.GROUPS).map(([g, teams]) => {
-        const order = (existingGroups && existingGroups[g]) || teams;
-        return `<div class="group-editor" data-group="${g}">
-          <h4>${t('group')} ${g}</h4>
-          <ul class="drag-list" data-group="${g}">
-            ${order.map((teamId,i) => `<li class="drag-item" draggable="true" data-team="${teamId}"><span class="drag-pos">${i+1}</span><span class="drag-handle">⠿</span>${teamName(teamId)}</li>`).join('')}
-          </ul>
-        </div>`;
-      }).join('')}
-    </div>
-    <button class="btn" type="submit">${t('save')}</button>
-    <div id="generalMsg" style="margin-top:10px; font-size:13px; color:var(--green);"></div>
-  </form>`;
-}
-
-/**
- * Shown once predictions are locked: everyone's picks, including your own.
- * Only rows the SERVER already revealed (i.e. that actually contain a
- * rank1) are displayed — that decision was made by Code.gs using its own
- * clock, not this page's CONFIG.GENERAL_DEADLINE. So even a copy of this
- * HTML file with an edited/past deadline can't force an early reveal:
- * the API simply keeps sending back redacted rows until the real moment.
- */
-function renderGeneralReveal(){
-  const revealed = STATE.generalBets.filter(b => b.rank1);
-  return `
-  <div class="section-title">${t('generalTitle')}</div>
-  <div class="section-sub">${t('revealSub')}</div>
-  <div class="lock-banner">🔒 ${t('locked')} — ${t('deadline')} ${fmtDate(CONFIG.GENERAL_DEADLINE)}</div>
-  ${!revealed.length ? `<div class="card"><div class="empty-state">${STATE.loaded?t('noneYet'):t('loading')}</div></div>` : revealed.map(b => {
-    const participant = STATE.participants.find(pp => normEmail(pp.email) === normEmail(b.email));
-    const name = participant ? participantName(participant) : (b.name || b.email);
-    const groups = safeParse(b.groupsJSON, null);
-    return `
-    <div class="card">
-      <div class="hof-name" style="margin-bottom:8px;">${name}</div>
-      <div class="section-sub" style="margin-bottom:4px;">🏆 ${t('rank1')}: ${teamName(b.rank1)} · ${t('rank2')}: ${teamName(b.rank2)} · ${t('rank3')}: ${teamName(b.rank3)} · ${t('rank4')}: ${teamName(b.rank4)}</div>
-      <div class="section-sub" style="margin-bottom:${groups?'4px':'0'};">⚽ ${t('topScorer')}: ${playerName(b.topScorer)} · 🎯 ${t('topAssist')}: ${playerName(b.topAssist)}</div>
-      ${groups ? `<div class="section-sub" style="font-size:11.5px;">${Object.entries(groups).map(([g,order]) => `${t('group')} ${g}: ${order.map(teamName).join(' › ')}`).join(' &nbsp;·&nbsp; ')}</div>` : ''}
-    </div>`;
-  }).join('')}
-  ${demoBanner()}`;
-}
-
-function wireGeneralForm(){
-  if(isGeneralLocked() || !STATE.user) return;
-  document.querySelectorAll('.drag-list').forEach(list => {
-    let dragEl = null;
-    list.querySelectorAll('.drag-item').forEach(item => {
-      item.addEventListener('dragstart', () => { dragEl = item; item.classList.add('dragging'); });
-      item.addEventListener('dragend', () => { item.classList.remove('dragging'); renumberGroup(list); });
-    });
-    list.addEventListener('dragover', e => {
-      e.preventDefault();
-      const after = [...list.querySelectorAll('.drag-item:not(.dragging)')].find(el => e.clientY < el.getBoundingClientRect().top + el.offsetHeight/2);
-      if(after) list.insertBefore(dragEl, after); else list.appendChild(dragEl);
-    });
-  });
-  document.getElementById('generalForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const groupsJSON = {};
-    document.querySelectorAll('.drag-list').forEach(list => {
-      groupsJSON[list.dataset.group] = [...list.querySelectorAll('.drag-item')].map(li => li.dataset.team);
-    });
-    const payload = {
-      type:'generalBet', email: STATE.user.email, name: STATE.user.name,
-      rank1: fd.get('rank1'), rank2: fd.get('rank2'), rank3: fd.get('rank3'), rank4: fd.get('rank4'),
-      topScorer: fd.get('topScorer'), topAssist: fd.get('topAssist'),
-      groupsJSON: JSON.stringify(groupsJSON), timestamp: new Date().toISOString(),
+    window.showSection = function(id, btn) {
+        originalShow(id, btn);
+        if (id === 'bets' && !window._betsLoaded) {
+            loadBetsData();
+            window._betsLoaded = true;
+        }
     };
-    const msg = document.getElementById('generalMsg');
-    const saveBtn = e.target.querySelector('button[type="submit"]');
-    msg.style.color = 'var(--text-dim)'; msg.textContent = t('saving'); saveBtn.disabled = true;
-    await postBet(payload);
-    const landed = await pollUntilSaved('GeneralBets', 'generalBets', () =>
-      STATE.generalBets.find(b => normEmail(b.email)===normEmail(STATE.user.email) && b.rank1===payload.rank1 && b.topScorer===payload.topScorer)
-    );
-    saveBtn.disabled = false;
-    if(landed){ showToast('✅ ' + t('saved')); renderAll(); }
-    else{ msg.style.color = 'var(--red)'; msg.textContent = t('saveFailed'); showToast('⚠️ ' + t('saveFailed'), true); renderAll(); }
-  });
-}
-function renumberGroup(list){ list.querySelectorAll('.drag-item').forEach((li,i) => li.querySelector('.drag-pos').textContent = i+1); }
-function fmtDate(iso){
-  const s = new Date(iso).toLocaleString(LANG==='he'?'he-IL':'en-GB', {dateStyle:'medium', timeStyle:'short'});
-  return `<span style="unicode-bidi:isolate; direction:${LANG==='he'?'rtl':'ltr'};">${s}</span>`;
-}
 
-/* ---- GAMES ---- */
-function betFor(gameId){ return STATE.user ? STATE.gameBets.find(b => normEmail(b.email)===normEmail(STATE.user.email) && String(b.gameId)===String(gameId)) : null; }
-function gameBetsFor(gameId){ return STATE.gameBets.filter(b => String(b.gameId)===String(gameId) && b.betA!==undefined); }
-function isKnockout(g){ return g.stage && g.stage !== 'group' && g.stage !== ''; }
-function advancingFieldLabel(g){ return (g.stage==='final' || g.stage==='3rd') ? t('advancingWinnerLabel') : t('advancingLabel'); }
+    // טיימר
+    const targetDate = new Date("June 11, 2026 22:00:00").getTime();
+    setInterval(() => {
+        const now = new Date().getTime();
+        const dist = targetDate - now;
+        const d = Math.floor(dist / (1000*60*60*24)), h = Math.floor((dist%(1000*60*60*24))/(1000*60*60)), m = Math.floor((dist%(1000*60*60))/(1000*60)), s = Math.floor((dist%(1000*60))/1000);
+        const el = document.getElementById("countdown");
+        if (el) el.innerHTML = dist < 0 ? "המונדיאל החל!" : `עוד ${d} ימים, ${h} שעות, ${m} דקות ו-${s} שניות`;
+    }, 1000);
 
-function renderGames(){
-  if(!STATE.games.length){
-    return `<div class="section-title">${t('gamesTitle')}</div><div class="card"><div class="empty-state">${STATE.loaded?'':'<div class="spinner"></div><br>'}${t('noGames')}</div></div>`;
-  }
-  const now = new Date();
-  const isOpen = g => g.status === 'scheduled' && now <= new Date(g.kickoffISO);
-  const openGames = STATE.games.filter(isOpen).sort((a,b) => new Date(a.kickoffISO) - new Date(b.kickoffISO));
-  const playedGames = STATE.games.filter(g => !isOpen(g)).sort((a,b) => new Date(b.kickoffISO) - new Date(a.kickoffISO));
-  return `
-  <div class="section-title">${t('gamesTitle')}</div>
-  <div class="section-sub">${t('gamesSub')}</div>
-  ${openGames.length ? openGames.map(g => renderGameCard(g)).join('') : `<div class="card"><div class="empty-state">${t('noOpenGames')}</div></div>`}
-  ${playedGames.length ? `
-    <div style="margin:28px 0 4px; font-size:18px; font-weight:800;">🗂️ ${t('playedGamesTitle')}</div>
-    <div class="section-sub">${t('playedGamesSub')}</div>
-    ${playedGames.map(g => renderPlayedGameCard(g)).join('')}
-  ` : ''}
-  ${demoBanner()}`;
-}
+    // טעינת טבלת ניקוד
+    let _lastRoundDiffs = {};
+    let _lastRankDiffs  = {};
 
-function renderGameCard(g){
-  const bet = betFor(g.id);
-  const roster = [
-    ...(CONFIG.ROSTERS[g.teamA]||[]).map(p => ({...p, teamId:g.teamA})),
-    ...(CONFIG.ROSTERS[g.teamB]||[]).map(p => ({...p, teamId:g.teamB})),
-  ];
-  return `
-  <div class="game-card">
-    <div class="game-meta">
-      <span>${t('group')} ${g.group||'—'} · ${fmtDate(g.kickoffISO)}</span>
-      <span class="status-pill status-scheduled">${t('statusScheduled')}</span>
-    </div>
-    <div class="game-teams">
-      <div class="team-name">${teamName(g.teamA)}</div>
-      <div class="score-inputs">
-        <input type="number" min="0" max="20" data-role="scoreA" value="${bet?bet.betA:''}">
-        <span class="score-sep">:</span>
-        <input type="number" min="0" max="20" data-role="scoreB" value="${bet?bet.betB:''}">
-      </div>
-      <div class="team-name">${teamName(g.teamB)}</div>
-    </div>
-    <div class="field" style="margin-bottom:8px;">
-      <label>${t('topPlayerOfGame')}</label>
-      <select data-role="topPlayer">
-        <option value="">${t('choose')}</option>
-        ${roster.map(p => `<option value="${p.id}" ${bet && bet.betTopPlayer===p.id?'selected':''}>${playerName(p)} (${p.pos}) — ${teamName(p.teamId)}</option>`).join('')}
-      </select>
-    </div>
-    ${isKnockout(g) ? `
-    <div class="field" style="margin-bottom:8px;">
-      <label>${advancingFieldLabel(g)}</label>
-      <select data-role="advancing">
-        <option value="">${t('choose')}</option>
-        <option value="${g.teamA}" ${bet && bet.betAdvancing===g.teamA?'selected':''}>${teamName(g.teamA)}</option>
-        <option value="${g.teamB}" ${bet && bet.betAdvancing===g.teamB?'selected':''}>${teamName(g.teamB)}</option>
-      </select>
-    </div>` : ''}
-    <button class="btn btn-ghost" data-role="saveGame" data-id="${g.id}">${t('save')}</button>
-  </div>`;
-}
+    function fetchScores() {
+        const tableBody = document.getElementById('leaderboard-body');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">מרענן נתונים...</td></tr>';
+        }
 
-/** Aggregates GameEvents by player for one game — only players who actually
- *  have events recorded (not the full rosters), points summed if a player
- *  appears in more than one event row. */
-function playedGameMatchEvents(gameId){
-  const events = STATE.gameEvents.filter(ev => String(ev.gameId) === String(gameId));
-  const byPlayer = {};
-  events.forEach(ev => {
-    const key = ev.player;
-    if(!byPlayer[key]) byPlayer[key] = { player: ev.player, team: ev.team, position: ev.position, events: [] };
-    byPlayer[key].events.push(ev);
-  });
-  return Object.values(byPlayer)
-    .map(p => ({ ...p, points: computePlayerGamePoints(p.events) }))
-    .sort((a,b) => b.points - a.points);
-}
-function computePlayerGamePoints(events){
-  const sp = CONFIG.SCORING.player;
-  let pts = 0;
-  events.forEach(ev => {
-    const n = +ev.count || 1, pos = ev.position;
-    if(ev.eventType === 'goal') pts += (sp.goal[pos]||0) * n;
-    else if(ev.eventType === 'assist') pts += (sp.assist[pos]||0) * n;
-    else if(ev.eventType === 'ownGoal') pts += sp.ownGoal * n;
-    else if(ev.eventType === 'redCard') pts += sp.redCard * n;
-    else if(ev.eventType === 'missedPenalty') pts += sp.missedPenalty * n;
-    else if(ev.eventType === 'cleanSheet' && pos === 'GK') pts += sp.cleanSheetGK * n;
-  });
-  return pts;
-}
-function playerPtsColor(pts){ return pts<=0 ? 'red' : pts<5 ? 'yellow' : 'green'; }
-function resolveEventPlayerDisplay(ev){
-  const p = findPlayer(ev.player);
-  if(p) return { name: playerName(p), team: teamName(p.teamId) };
-  return { name: ev.player, team: ev.team ? teamName(ev.team) : '' };
-}
-function eventBreakdownText(events){
-  const labels = { goal:t('evGoal'), assist:t('evAssist'), ownGoal:t('evOwnGoal'), redCard:t('evRedCard'), missedPenalty:t('evMissedPenalty'), cleanSheet:t('evCleanSheet') };
-  const counts = {};
-  events.forEach(ev => { counts[ev.eventType] = (counts[ev.eventType]||0) + (+ev.count || 1); });
-  return Object.entries(counts).map(([k,n]) => `${n>1 ? n+'× ' : ''}${labels[k]||k}`).join(' · ');
-}
+        // שלב 1: קרא את A1 מגיליון 0 — מספר המשחקים ששוחקו
+        const cbCtrl = 'scoreCtrlCb_' + Date.now();
+        const ctrlUrl = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT A LIMIT 1')}`
+            + `&gid=${CONTROL_GID}&tqx=responseHandler:${cbCtrl}&headers=0`;
 
-function renderPlayedGameCard(g){
-  const isFinal = g.status === 'final' && g.scoreA!=='' && g.scoreA!=null && g.scoreB!=='' && g.scoreB!=null;
-  const bets = gameBetsFor(g.id);
-  const matchEvents = playedGameMatchEvents(g.id);
-  const exportId = 'export-game-' + g.id;
-  return `
-  <div class="game-card">
-    <div class="game-meta">
-      <span>${t('group')} ${g.group||'—'} · ${fmtDate(g.kickoffISO)}</span>
-      <span class="status-pill status-${isFinal?'final':'locked'}">${isFinal?t('statusFinal'):t('statusLocked')}</span>
-    </div>
-    <div class="game-teams" style="margin-bottom:${isKnockout(g)&&g.advancingTeam?'2px':'10px'};">
-      <div class="team-name">${teamName(g.teamA)}</div>
-      <div class="mono" style="font-size:22px; font-weight:700; direction:ltr;">${isFinal ? `${g.scoreA} : ${g.scoreB}` : '– : –'}</div>
-      <div class="team-name">${teamName(g.teamB)}</div>
-    </div>
-    ${isKnockout(g) && g.advancingTeam ? `<div class="section-sub" style="text-align:center; margin-bottom:10px;">🏆 ${teamName(g.advancingTeam)}</div>` : ''}
+        window[cbCtrl] = function(response) {
+            delete window[cbCtrl];
+            let currentGame = null;
+            try {
+                const val = response.table.rows[0].c[0].v;
+                currentGame = Number.isInteger(val) ? val : Math.round(parseFloat(val));
+            } catch(e) {
+                console.warn('לא ניתן לקרוא מספר משחק נוכחי:', e);
+            }
+            fetchStatsDiffs(currentGame);
+        };
 
-    <div id="${exportId}">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:8px; flex-wrap:wrap;">
-        <div class="card-title" style="margin-bottom:0;">${t('everyoneBets')}</div>
-        <button class="icon-btn" data-export-exclude data-role="exportGameBets" data-target="${exportId}" data-file="matchday-${g.id}.png" style="font-size:11px; padding:5px 8px; display:flex; align-items:center; gap:4px;">📤 ${t('exportImage')}</button>
-      </div>
-      ${bets.length ? `
-      <table class="leaderboard">
-        <thead><tr>
-          <th>${t('player')}</th><th>${t('yourScore')}</th><th>${t('topPlayerOfGame')}</th>
-          ${isKnockout(g) ? `<th>${t('advancingShort')}</th>` : ''}
-          <th style="text-align:${LANG==='he'?'left':'right'}">${t('points')}</th>
-        </tr></thead>
-        <tbody>
-          ${bets.map(b => {
-            const participant = STATE.participants.find(pp => normEmail(pp.email)===normEmail(b.email));
-            const name = participant ? participantName(participant) : (b.name || b.email);
-            const pts = (b.pointsEarned!==undefined && b.pointsEarned!=='') ? b.pointsEarned : null;
-            const tp = findPlayer(b.betTopPlayer);
-            return `<tr>
-              <td>${name}</td>
-              <td class="mono" style="direction:ltr;">${b.betA ?? '—'}:${b.betB ?? '—'}</td>
-              <td>${tp ? playerName(tp) : (b.betTopPlayer || '—')}</td>
-              ${isKnockout(g) ? `<td>${b.betAdvancing ? teamName(b.betAdvancing) : '—'}</td>` : ''}
-              <td class="points-cell">${pts!==null ? pts : '—'}</td>
+        const s0 = document.createElement('script');
+        s0.src = ctrlUrl;
+        s0.onload = () => s0.remove();
+        document.body.appendChild(s0);
+    }
+
+    function fetchStatsDiffs(currentGame) {
+        // שלב 2: מושך את גיליון ה-STATS כדי לחשב הפרשים לפי מספר משחק
+        const cbStats = 'scoreStatsCb_' + Date.now();
+        const statsUrl = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT * LIMIT 500 OFFSET 0')}`
+            + `&gid=${STATS_GID}&tqx=responseHandler:${cbStats}&headers=1`;
+
+        window[cbStats] = function(response) {
+            delete window[cbStats];
+            try {
+                const cols = response.table.cols;
+                const rows = response.table.rows;
+
+                // שמות שחקנים מהכותרות (עמודה 1 ואילך)
+                const playerNames = [];
+                for (let c = 1; c < cols.length; c++) {
+                    if (cols[c].label && cols[c].label.trim()) {
+                        playerNames.push({ name: cols[c].label.trim(), col: c });
+                    }
+                }
+
+                // בנה שתי מפות לפי מספר משחק:
+                // scoreRowMap[n] = שורת ניקוד מצטבר (עמודה A = n)
+                // rankRowMap[n]  = שורת דירוג (עמודה A = null, השורה לפני שורת n)
+                const scoreRowMap = {};
+                const rankRowMap  = {};
+
+                for (let ri = 0; ri < rows.length; ri++) {
+                    const row = rows[ri];
+                    if (!row || !row.c) continue;
+                    const aVal = row.c[0] ? row.c[0].v : null;
+
+                    if (aVal === null) {
+                        // שורת דירוג — המספר שלה הוא לפי השורה הבאה
+                        for (let rj = ri + 1; rj < rows.length; rj++) {
+                            const nextRow = rows[rj];
+                            if (!nextRow || !nextRow.c || !nextRow.c[0]) continue;
+                            const nextVal = nextRow.c[0].v;
+                            if (nextVal === null) continue;
+                            const num = typeof nextVal === 'number'
+                                ? (Number.isInteger(nextVal) ? nextVal : Math.round(nextVal))
+                                : parseInt(nextVal);
+                            if (!isNaN(num) && num > 0) {
+                                rankRowMap[num] = row.c;
+                            }
+                            break;
+                        }
+                    } else {
+                        const num = typeof aVal === 'number'
+                            ? (Number.isInteger(aVal) ? aVal : Math.round(aVal))
+                            : parseInt(aVal);
+                        if (!isNaN(num) && num > 0) {
+                            scoreRowMap[num] = row.c;
+                        }
+                    }
+                }
+
+                _lastRoundDiffs = {};
+                _lastRankDiffs  = {};
+
+                // הפרש ניקוד: משחק נוכחי מול קודם
+                const currentScoreRow = currentGame !== null ? scoreRowMap[currentGame] : null;
+                const prevScoreRow    = currentGame !== null ? scoreRowMap[currentGame - 1] : null;
+                if (currentScoreRow) {
+                    playerNames.forEach(p => {
+                        const curr = currentScoreRow[p.col]?.v != null ? Number(currentScoreRow[p.col].v) : 0;
+                        const prev = prevScoreRow?.[p.col]?.v != null ? Number(prevScoreRow[p.col].v) : 0;
+                        _lastRoundDiffs[p.name] = curr - prev;
+                    });
+                }
+
+                // הפרש דירוג: משחק נוכחי מול קודם (ירידה בדירוג = מספר גדל = רע)
+                const currentRankRow = currentGame !== null ? rankRowMap[currentGame] : null;
+                const prevRankRow    = currentGame !== null ? rankRowMap[currentGame - 1] : null;
+                if (currentRankRow) {
+                    playerNames.forEach(p => {
+                        const curr = currentRankRow[p.col]?.v != null ? Number(currentRankRow[p.col].v) : null;
+                        const prev = prevRankRow?.[p.col]?.v != null ? Number(prevRankRow[p.col].v) : null;
+                        if (curr !== null && prev !== null) {
+                            // ירידה בדירוג = מספר גדל (מקום 3→5 = ירידה של 2)
+                            // עלייה בדירוג = מספר קטן (מקום 5→3 = עלייה של 2)
+                            _lastRankDiffs[p.name] = prev - curr; // חיובי = עלייה, שלילי = ירידה
+                        }
+                    });
+                }
+
+            } catch(e) {
+                console.warn('לא ניתן לחשב הפרשי ניקוד/דירוג:', e);
+            }
+
+            // שלב 3: מושך את הטבלה הראשית
+            const query = encodeURIComponent('SELECT E, G, F OFFSET 2');
+            const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq?tq=${query}&gid=0&tqx=responseHandler:handleResponse`;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = () => script.remove();
+            document.body.appendChild(script);
+        };
+
+        const s = document.createElement('script');
+        s.src = statsUrl;
+        s.onload = () => s.remove();
+        document.body.appendChild(s);
+    }
+
+    window.handleResponse = function(response) {
+        const rows = response.table.rows;
+        let html = '';
+
+        const medals = { 1: '🥇', 2: '🥈' };
+        const aiPlayers = ['גרוק', 'צ\'אט', 'קלוד', 'ג\'מיני'];
+
+        const totalRows = Math.min(rows.length, 25);
+
+        // מצא את הניקוד הנמוך ביותר (מקום אחרון — יכולים להיות כמה)
+        const allScores = [];
+        for (let i = 0; i < totalRows; i++) {
+            const row = rows[i].c;
+            const score = row[2] ? Number(row[2].v) : null;
+            if (score !== null) allScores.push(score);
+        }
+        const minScore = allScores.length ? Math.min(...allScores) : null;
+
+        // מצא מי עלה/ירד הכי הרבה דירוגים
+        const rankDiffVals = Object.values(_lastRankDiffs);
+        const maxRankGain = rankDiffVals.length ? Math.max(...rankDiffVals) : null;
+        const maxRankLoss = rankDiffVals.length ? Math.min(...rankDiffVals) : null;
+
+        // ניקוד גבוה במשחק האחרון
+        const HIGH_SCORE_THRESHOLD = 6;
+
+        for (let i = 0; i < totalRows; i++) {
+            const row = rows[i].c;
+            const rank  = row[0] ? row[0].v : '';
+            const name  = row[1] ? String(row[1].v) : '';
+            const score = row[2] ? Number(row[2].v) : null;
+
+            const rankDisplay = medals[rank] || rank;
+            const isAI = aiPlayers.some(ai => name.includes(ai));
+
+            // התאמת שם לדיפים (חלקית)
+            const scoreDiffKey = Object.keys(_lastRoundDiffs).find(k => name.includes(k) || k.includes(name));
+            const scoreDiff    = scoreDiffKey !== undefined ? _lastRoundDiffs[scoreDiffKey] : null;
+
+            const rankDiffKey  = Object.keys(_lastRankDiffs).find(k => name.includes(k) || k.includes(name));
+            const rankDiff     = rankDiffKey !== undefined ? _lastRankDiffs[rankDiffKey] : null;
+
+            const emojis = [];
+            if (rank === 1)                                                                    emojis.push('👀');
+            if (score !== null && score === minScore)                                          emojis.push('💀');
+            if (rankDiff !== null && maxRankGain !== null && rankDiff === maxRankGain && maxRankGain > 0) emojis.push('📈');
+            if (rankDiff !== null && maxRankLoss !== null && rankDiff === maxRankLoss && maxRankLoss < 0) emojis.push('📉');
+            if (scoreDiff !== null && scoreDiff >= HIGH_SCORE_THRESHOLD && scoreDiff <= 8)                       emojis.push('🔥');
+
+            const emojiStr = emojis.length ? ` ${emojis.join('')}` : '';
+
+            const nameDisplay = isAI
+                ? `${name}${emojiStr} <span style="background:#e0f0ff;color:#0046ad;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;vertical-align:middle;border:1px solid #b3d4f5;">🤖 AI</span>`
+                : `${name}${emojiStr}`;
+
+            html += `<tr>
+                <td>${rankDisplay}</td>
+                <td>${nameDisplay}</td>
+                <td><strong>${score}</strong></td>
             </tr>`;
-          }).join('')}
-        </tbody>
-      </table>` : `<div class="empty-state" style="padding:20px;">${t('noneYet')}</div>`}
-    </div>
+        }
+        document.getElementById('leaderboard-body').innerHTML = html;
+    };
 
-    <div class="card-title" style="margin-top:16px;">${t('matchEventsTitle')}</div>
-    ${matchEvents.length ? matchEvents.map(p => {
-      const disp = resolveEventPlayerDisplay(p);
-      return `<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--border);">
-        <div>
-          <div style="font-weight:700; font-size:13.5px;">${disp.name}<span style="color:var(--text-faint); font-weight:500;"> — ${disp.team}</span></div>
-          <div style="font-size:11.5px; color:var(--text-dim);">${eventBreakdownText(p.events)}</div>
-        </div>
-        <span class="rule-value player-pts-${playerPtsColor(p.points)}">${p.points}</span>
-      </div>`;
-    }).join('') : `<div class="empty-state" style="padding:14px;">${t('noEventsYet')}</div>`}
-  </div>`;
-}
+    // ============================================================
+    // STATS
+    // ============================================================
+    const STATS_GID   = '692862161';
+    const CONTROL_GID = '0';
 
-function wireGamesForm(){
-  document.querySelectorAll('[data-role="saveGame"]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      if(!STATE.user){ alert(t('emailFirst')); return; }
-      const card = btn.closest('.game-card');
-      const advSelect = card.querySelector('[data-role="advancing"]');
-      const payload = {
-        type:'gameBet', email: STATE.user.email, name: STATE.user.name, gameId: btn.dataset.id,
-        betA: card.querySelector('[data-role="scoreA"]').value,
-        betB: card.querySelector('[data-role="scoreB"]').value,
-        betTopPlayer: card.querySelector('[data-role="topPlayer"]').value,
-        betAdvancing: advSelect ? advSelect.value : '',
-        timestamp: new Date().toISOString(),
-      };
-      const originalText = btn.textContent;
-      btn.textContent = '…'; btn.disabled = true;
-      await postBet(payload);
-      const landed = await pollUntilSaved('GameBets', 'gameBets', () =>
-        STATE.gameBets.find(b => normEmail(b.email)===normEmail(STATE.user.email) && String(b.gameId)===String(payload.gameId)
-          && String(b.betA)===String(payload.betA) && String(b.betB)===String(payload.betB))
-      );
-      if(landed){ showToast('✅ ' + t('saved')); renderAll(); }
-      else{ showToast('⚠️ ' + t('saveFailed'), true); btn.textContent = originalText; btn.disabled = false; }
+    let statsChartInstance = null;
+
+    const PLAYER_COLORS = [
+        '#0046ad','#e63946','#2ec4b6','#f4a261','#6a4c93',
+        '#43aa8b','#f77f00','#277da1','#c77dff','#90be6d',
+        '#f94144','#577590','#ffb703','#d62828','#023e8a',
+        '#52b788','#e07a5f','#3d405b','#81b29a','#f2cc8f','#118ab2'
+    ];
+
+    function fetchStats() {
+        const statusEl = document.getElementById('stats-status');
+        const wrapper  = document.getElementById('stats-chart-wrapper');
+        statusEl.style.display = 'block';
+        statusEl.textContent   = 'טוען נתונים...';
+        wrapper.style.display  = 'none';
+        document.getElementById('stats-legend').innerHTML = '';
+
+        const cbName = 'statsCtrlCb_' + Date.now();
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+                  + `?tq=${encodeURIComponent('SELECT A LIMIT 1')}`
+                  + `&gid=${CONTROL_GID}&tqx=responseHandler:${cbName}&headers=0`;
+
+        window[cbName] = function(response) {
+            delete window[cbName];
+            try {
+                const val = response.table.rows[0].c[0].v;
+                const stage = String(Number.isInteger(val) ? val : parseFloat(val) === Math.floor(parseFloat(val)) ? Math.floor(parseFloat(val)) : val).trim();
+                fetchStatsData(stage);
+            } catch(e) {
+                statusEl.textContent = 'שגיאה בטעינת שלב נוכחי: ' + e.message;
+            }
+        };
+        injectScript(url, cbName, statusEl, 'שגיאת רשת — שלב נוכחי');
+    }
+
+    function fetchStatsData(currentStage) {
+        const statusEl = document.getElementById('stats-status');
+        statusEl.textContent = `שלב נוכחי: "${currentStage}" — טוען ניקוד...`;
+
+        const cbName = 'statsDataCb_' + Date.now();
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+                  + `?tq=${encodeURIComponent('SELECT * LIMIT 213 OFFSET 0')}`
+                  + `&gid=${STATS_GID}&tqx=responseHandler:${cbName}&headers=1`;
+
+        window[cbName] = function(response) {
+            delete window[cbName];
+            try {
+                processStatsDataV2(response, currentStage);
+            } catch(e) {
+                statusEl.textContent = 'שגיאה בעיבוד נתונים: ' + e.message;
+                console.error(e);
+            }
+        };
+        injectScript(url, cbName, statusEl, 'שגיאת רשת — טבלת ניקוד');
+    }
+
+    function processStatsDataV2(response, currentStage) {
+        const statusEl = document.getElementById('stats-status');
+        const wrapper  = document.getElementById('stats-chart-wrapper');
+
+        const cols = response.table.cols;
+        const rows = response.table.rows;
+
+        const players = [];
+        for (let col = 1; col < cols.length; col++) {
+            const label = cols[col].label;
+            if (label && label.trim() !== '') {
+                players.push({ name: label.trim(), col });
+            }
+        }
+
+        if (players.length === 0) {
+            statusEl.textContent = 'לא נמצאו שמות שחקנים — בדוק console';
+            return;
+        }
+
+        const scoreRows = [];
+        let foundStop = false;
+
+        for (let ri = 0; ri < rows.length; ri++) {
+            const row = rows[ri];
+            if (!row || !row.c || !row.c[0] || row.c[0].v === null) continue;
+            const rawVal = row.c[0].v;
+            const label = typeof rawVal === 'number'
+                ? String(Number.isInteger(rawVal) ? rawVal : Math.round(rawVal))
+                : String(rawVal).trim();
+            if (label === '' || label === 'null') continue;
+            scoreRows.push({ label, cells: row.c });
+            if (String(label).trim() === String(currentStage).trim()) { foundStop = true; break; }
+        }
+
+        if (scoreRows.length === 0) { statusEl.textContent = 'אין ניקוד להצגה עדיין'; return; }
+
+        const labels = scoreRows.map(r => r.label);
+
+        // עבור כל שלב, חשב את המיקום (rank) של כל שחקן לפי הניקוד הגולמי שלו
+        // מיקום 1 = הניקוד הגבוה ביותר באותו שלב
+        const rawScoresByPlayer = players.map(player =>
+            scoreRows.map(sr => {
+                const c = sr.cells[player.col];
+                return (c && c.v !== null) ? Number(c.v) : null;
+            })
+        );
+
+        const ranksByPlayer = players.map(() => []);
+        for (let stageIdx = 0; stageIdx < scoreRows.length; stageIdx++) {
+            // אסוף את כל הניקודים הקיימים בשלב הזה, ממוין מהגבוה לנמוך
+            const entries = players
+                .map((player, pi) => ({ pi, score: rawScoresByPlayer[pi][stageIdx] }))
+                .filter(e => e.score !== null)
+                .sort((a, b) => b.score - a.score);
+
+            // קביעת מיקום עם טיפול בשוויון (אותו ניקוד = אותו מיקום)
+            let rank = 0;
+            let prevScore = null;
+            entries.forEach((e, idx) => {
+                if (e.score !== prevScore) { rank = idx + 1; prevScore = e.score; }
+                ranksByPlayer[e.pi][stageIdx] = rank;
+            });
+
+            // שחקנים בלי ניקוד באותו שלב - אין מיקום
+            players.forEach((player, pi) => {
+                if (ranksByPlayer[pi][stageIdx] === undefined) ranksByPlayer[pi][stageIdx] = null;
+            });
+        }
+
+        const datasets = players.map((player, pi) => ({
+            label:           player.name,
+            data:            ranksByPlayer[pi],
+            rawScores:       rawScoresByPlayer[pi],
+            borderColor:     PLAYER_COLORS[pi % PLAYER_COLORS.length],
+            backgroundColor: PLAYER_COLORS[pi % PLAYER_COLORS.length] + '18',
+            borderWidth:     2.5,
+            pointRadius:     5,
+            pointHoverRadius:8,
+            tension:         0.35,
+            fill:            false,
+            spanGaps:        true,
+        }));
+
+        buildLegend(players);
+        buildChart(labels, datasets);
+
+        document.getElementById('stats-stage').textContent =
+            `📍 שלב נוכחי: ${currentStage}` +
+            (foundStop ? '' : ' (שלב לא נמצא)');
+
+        statusEl.style.display = 'none';
+        wrapper.style.display  = 'block';
+    }
+
+    function buildLegend(players) {
+        const legendEl = document.getElementById('stats-legend');
+        legendEl.innerHTML = '';
+        players.forEach((player, pi) => {
+            const color = PLAYER_COLORS[pi % PLAYER_COLORS.length];
+            const btn   = document.createElement('button');
+            btn.textContent    = player.name;
+            btn.dataset.idx    = pi;
+            btn.dataset.active = 'true';
+            btn.style.cssText  =
+                `background:${color}20;border:2px solid ${color};color:${color};` +
+                `padding:5px 13px;border-radius:20px;cursor:pointer;` +
+                `font-size:0.85rem;font-family:inherit;font-weight:700;` +
+                `transition:opacity 0.2s;white-space:nowrap;`;
+            btn.onclick = () => togglePlayer(btn, pi);
+            legendEl.appendChild(btn);
+        });
+    }
+
+    function togglePlayer(btn, idx) {
+        if (!statsChartInstance) return;
+        const visible = statsChartInstance.isDatasetVisible(idx);
+        visible ? statsChartInstance.hide(idx) : statsChartInstance.show(idx);
+        btn.style.opacity  = visible ? '0.3' : '1';
+        btn.dataset.active = visible ? 'false' : 'true';
+    }
+
+    function toggleAllPlayers(show) {
+        if (!statsChartInstance) return;
+        document.querySelectorAll('#stats-legend button').forEach(btn => {
+            const idx = parseInt(btn.dataset.idx);
+            show ? statsChartInstance.show(idx) : statsChartInstance.hide(idx);
+            btn.style.opacity  = show ? '1' : '0.3';
+            btn.dataset.active = show ? 'true' : 'false';
+        });
+    }
+
+    function buildChart(labels, datasets) {
+        if (statsChartInstance) { statsChartInstance.destroy(); statsChartInstance = null; }
+
+        const playerCount = datasets.length;
+
+        statsChartInstance = new Chart(document.getElementById('statsChart'), {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive:          true,
+                maintainAspectRatio: false,
+                interaction:         { mode: 'nearest', intersect: true },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        rtl:             true,
+                        textDirection:   'rtl',
+                        backgroundColor: 'rgba(255,255,255,0.97)',
+                        titleColor:      '#1e293b',
+                        bodyColor:       '#334155',
+                        borderColor:     '#e2e8f0',
+                        borderWidth:     1,
+                        padding:         12,
+                        callbacks: {
+                            label: ctx => {
+                                const rawScores = ctx.dataset.rawScores;
+                                const score = rawScores ? rawScores[ctx.dataIndex] : null;
+                                const scoreText = (score !== null && score !== undefined) ? `${score} נק'` : 'אין נתון';
+                                return ` ${ctx.dataset.label}: מקום ${ctx.parsed.y} (${scoreText})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { font: { family: 'Assistant', size: 11 }, color: '#64748b', maxRotation: 45 },
+                        grid:  { color: '#f1f5f9' }
+                    },
+                    y: {
+                        reverse: true,
+                        min: 1,
+                        max: playerCount,
+                        ticks: {
+                            stepSize: 1,
+                            font: { family: 'Assistant', size: 11 },
+                            color: '#64748b',
+                            callback: function(value) {
+                                return Number.isInteger(value) ? `מקום ${value}` : '';
+                            }
+                        },
+                        grid:  { color: '#f1f5f9' }
+                    }
+                }
+            }
+        });
+    }
+
+    function injectScript(url, cbName, statusEl, errMsg) {
+        const s   = document.createElement('script');
+        s.src     = url;
+        s.onerror = () => { statusEl.textContent = errMsg; delete window[cbName]; s.remove(); };
+        s.onload  = () => s.remove();
+        document.body.appendChild(s);
+    }
+
+    const _origShowSection = window.showSection || showSection;
+    window.showSection = function(id, btn) {
+        _origShowSection(id, btn);
+        if (id === 'stats' && !statsChartInstance) fetchStats();
+    };
+
+    // הפעלה ראשונית
+    initGames();
+    fetchScores();
+
+    // ============================================================
+    // BETS
+    // ============================================================
+    const BETS_GID = '1559954067';
+
+    function fetchRange(range, cbName) {
+        const url = `https://docs.google.com/spreadsheets/d/${MAIN_SHEET_ID}/gviz/tq`
+            + `?tq=${encodeURIComponent('SELECT *')}`
+            + `&range=${range}`
+            + `&gid=${BETS_GID}`
+			+ `&headers=0`
+            + `&tqx=responseHandler:${cbName}`;
+
+        const s = document.createElement('script');
+        s.src = url;
+        document.body.appendChild(s);
+    }
+	
+	const COLOR_RULES = {
+        "🏆 4 האחרונות": [
+            { column: 1, value: "", color: "#86efac" },
+            { column: 2, value: "", color: "#86efac" },
+			{ column: 3, value: "", color: "#86efac" },
+            { column: 4, value: "", color: "#86efac" },
+			{ column: 2, value: "אורוגוואי", color: "#efa286" },
+			{ column: 1, value: "פורטוגל", color: "#efa286" },
+			{ column: 2, value: "פורטוגל", color: "#efa286" },
+			{ column: 3, value: "פורטוגל", color: "#efa286" },
+			{ column: 4, value: "פורטוגל", color: "#efa286" },
+			{ column: 1, value: "ברזיל", color: "#efa286" },
+			{ column: 2, value: "ברזיל", color: "#efa286" },
+			{ column: 1, value: "צרפת", color: "#efea86" },
+			{ column: 2, value: "צרפת", color: "#efea86" },
+			{ column: 3, value: "ספרד", color: "#efea86" },
+			{ column: 4, value: "ספרד", color: "#efea86" },
+			{ column: 3, value: "ברזיל", color: "#efa286" },
+			{ column: 4, value: "ברזיל", color: "#efa286" },
+			{ column: 2, value: "גרמניה", color: "#efa286" },
+			{ column: 3, value: "גרמניה", color: "#efa286" },
+			{ column: 4, value: "גרמניה", color: "#efa286" },
+			{ column: 2, value: "הולנד", color: "#efa286" },
+			{ column: 3, value: "הולנד", color: "#efa286" },
+			{ column: 4, value: "הולנד", color: "#efa286" },
+			{ column: 3, value: "נורווגיה", color: "#efa286" },
+			{ column: 4, value: "נורווגיה", color: "#efa286" },
+        ],
+		"⚽ מלך שערים": [
+            { column: 1, value: "", color: "#86efac" },
+			{ column: 1, value: "(פורטוגל) כריסטיאנו רונאלדו", color: "#efa286" },
+			{ column: 1, value: "(ברזיל) ויניסיוס ג'וניור", color: "#efa286" },
+			{ column: 1, value: "(נורווגיה) ארלינד הולאנד", color: "#efa286" },
+			{ column: 1, value: "(נורווגיה) ארלינד הולאד", color: "#efa286" },
+        ],
+        "🏠 בית א": [
+            { column: 1, value: "מקסיקו", color: "#86efac" },
+            { column: 2, value: "דרום אפריקה", color: "#86efac" },
+			{ column: 3, value: "דרום קוריאה", color: "#86efac" },
+            { column: 4, value: "צ'כיה", color: "#86efac" },
+        ],
+		"🏠 בית ב": [
+            { column: 1, value: "שוויץ", color: "#86efac" },
+            { column: 2, value: "קנדה", color: "#86efac" },
+			{ column: 3, value: "בוסניה", color: "#86efac" },
+            { column: 4, value: "קטאר", color: "#86efac" },
+        ],
+		"🏠 בית ג": [
+            { column: 1, value: "ברזיל", color: "#86efac" },
+            { column: 2, value: "מרוקו", color: "#86efac" },
+			{ column: 3, value: "סקוטלנד", color: "#86efac" },
+            { column: 4, value: "האיטי", color: "#86efac" },
+        ],
+		"🏠 בית ד": [
+            { column: 1, value: "ארצות הברית", color: "#86efac" },
+            { column: 2, value: "אוסטרליה", color: "#86efac" },
+			{ column: 3, value: "פרגוואי", color: "#86efac" },
+            { column: 4, value: "טורקיה", color: "#86efac" },
+        ],
+		"🏠 בית ה": [
+            { column: 1, value: "גרמניה", color: "#86efac" },
+            { column: 2, value: "חוף השנהב", color: "#86efac" },
+			{ column: 3, value: "אקוודור", color: "#86efac" },
+            { column: 4, value: "קוראסאו", color: "#86efac" },
+        ],
+		"🏠 בית ו": [
+            { column: 1, value: "הולנד", color: "#86efac" },
+            { column: 2, value: "יפן", color: "#86efac" },
+			{ column: 3, value: "שוודיה", color: "#86efac" },
+            { column: 4, value: "תוניסיה", color: "#86efac" },
+        ],
+		"🏠 בית ז": [
+            { column: 1, value: "בלגיה", color: "#86efac" },
+            { column: 2, value: "מצרים", color: "#86efac" },
+			{ column: 3, value: "אירן", color: "#86efac" },
+            { column: 4, value: "ניו זילנד", color: "#86efac" },
+        ],
+		"🏠 בית ח": [
+            { column: 1, value: "ספרד", color: "#86efac" },
+            { column: 2, value: "כף ורדה", color: "#86efac" },
+			{ column: 3, value: "אורוגוואי", color: "#86efac" },
+            { column: 4, value: "ערב הסעודית", color: "#86efac" },
+        ],
+		"🏠 בית ט": [
+            { column: 1, value: "צרפת", color: "#86efac" },
+            { column: 2, value: "נורווגיה", color: "#86efac" },
+			{ column: 3, value: "סנגל", color: "#86efac" },
+            { column: 4, value: "עיראק", color: "#86efac" },
+        ],
+		"🏠 בית י": [
+            { column: 1, value: "ארגנטינה", color: "#86efac" },
+            { column: 2, value: "אוסטריה", color: "#86efac" },
+			{ column: 3, value: "אלג'יריה", color: "#86efac" },
+            { column: 4, value: "ירדן", color: "#86efac" },
+        ],
+		"🏠 בית יא": [
+            { column: 1, value: "קולומביה", color: "#86efac" },
+            { column: 2, value: "פורטוגל", color: "#86efac" },
+			{ column: 3, value: "קונגו", color: "#86efac" },
+            { column: 4, value: "אוזבקיסטן", color: "#86efac" },
+        ],
+		"🏠 בית יב": [
+            { column: 1, value: "אנגליה", color: "#86efac" },
+            { column: 2, value: "קרואטיה", color: "#86efac" },
+			{ column: 3, value: "גאנה", color: "#86efac" },
+            { column: 4, value: "פנמה", color: "#86efac" },
+        ],
+    };
+	
+    function buildTable(title, headers, response) {
+    let html = `<div class="card"><h3>${title}</h3><table>`;
+    html += "<thead><tr>";
+    headers.forEach(h => { html += `<th>${h}</th>`; });
+    html += "</tr></thead><tbody>";
+
+    const rules = COLOR_RULES[title] || [];
+
+    const rows = response.table.rows;
+    rows.forEach(r => {
+        const playerName = String(r.c[0]?.v ?? '').trim(); // שם המשתתף - עמודה 0
+        html += "<tr>";
+        r.c.forEach((c, colIndex) => {
+            const value = c?.v ?? '';
+            const matchedRule = rules.find(rule => {
+                const columnMatches = rule.column === colIndex;
+                const valueMatches  = rule.value === undefined || String(value).trim() === rule.value;
+                const playerMatches = rule.player === undefined || playerName === rule.player;
+                return columnMatches && valueMatches && playerMatches;
+            });
+            const style = matchedRule ? ` style="background-color:${matchedRule.color}"` : '';
+            html += `<td${style}>${value}</td>`;
+        });
+        html += "</tr>";
     });
-  });
-  document.querySelectorAll('[data-role="exportGameBets"]').forEach(btn => {
-    btn.addEventListener('click', () => exportElementImage(btn.dataset.target, btn.dataset.file, btn));
-  });
+
+    html += "</tbody></table></div>";
+    return html;
 }
 
-/* ---- STATS ---- */
-function renderStats(){
-  return `
-  <div class="section-title">${t('statsTitle')}</div>
-  <div class="section-sub">${t('statsSub')}</div>
-  <div class="card">
-    <div class="card-title">${t('pointsOverTime')}</div>
-    <canvas id="statsCanvas"></canvas>
-    <div class="legend" id="statsLegend"></div>
-  </div>
-  ${demoBanner()}`;
-}
-function drawStatsChart(){
-  const canvas = document.getElementById('statsCanvas'); if(!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width*dpr; canvas.height = 280*dpr;
-  const ctx = canvas.getContext('2d'); ctx.scale(dpr,dpr);
-  const ranked = rankedParticipants();
-  const palette = ['#ffb020','#4c9a6a','#5b8fd6','#e2564f','#c9c9c9','#8a611c'];
-  // Build a synthetic points-over-time series from each participant's form history (demo/derived).
-  const rounds = Math.max(...ranked.map(p => (p.form||[]).length), 1);
-  const W = rect.width, H = 280, padL = 30, padB = 20, padT = 10;
-  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border');
-  ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, H-padB); ctx.lineTo(W, H-padB); ctx.stroke();
-  ranked.forEach((p,pi) => {
-    const form = p.form||[];
-    let running = p.totalPoints - form.length*2; // rough back-projection for a demo trend line
-    const pts = [running, ...form.map(r => running += (r==='W'?2:r==='D'?1:0))];
-    ctx.strokeStyle = palette[pi % palette.length]; ctx.lineWidth = 2; ctx.beginPath();
-    pts.forEach((val,i) => {
-      const x = padL + (i/(pts.length-1||1)) * (W-padL-6);
-      const maxY = Math.max(...ranked.map(q => q.totalPoints), 1);
-      const y = (H-padB) - (val/maxY) * (H-padB-padT);
-      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-    });
-    ctx.stroke();
-  });
-  document.getElementById('statsLegend').innerHTML = ranked.map((p,pi) =>
-    `<div class="legend-item"><span class="legend-swatch" style="background:${palette[pi%palette.length]}"></span>${p.displayName}</div>`).join('');
-}
+    function loadBetsData() {
+        const container = document.getElementById('bets-container');
+        container.innerHTML = 'טוען נתונים...';
 
-/* ---- HALL OF FAME ---- */
-function renderHof(){
-  if(!STATE.hof.length){
-    const msg = STATE.loaded ? t('noHof') : t('loading');
-    return `<div class="section-title">${t('hofTitle')}</div><div class="card"><div class="empty-state">${STATE.loaded?'':'<div class="spinner"></div><br>'}${msg}</div></div>`;
-  }
-  return `
-  <div class="section-title">${t('hofTitle')}</div>
-  <div class="section-sub">${t('hofSub')}</div>
-  <div class="card">
-    ${STATE.hof.sort((a,b)=>b.year-a.year).map(h => {
-      const winner = h['winnerName_'+LANG] || h.winnerName_en || h.winnerName_he;
-      const runnerUp = h['runnerUp_'+LANG] || h.runnerUp_en || h.runnerUp_he;
-      const champion = h['championTeam_'+LANG] || h.championTeam_en || h.championTeam_he;
-      const location = h['location_'+LANG] || h.location_en || h.location_he;
-      const typeLabel = h.tournamentType === 'euro' ? t('euro') : t('worldcup');
-      return `
-      <div class="hof-item">
-        <div class="hof-year">${h.year}</div>
-        <div class="hof-trophy">🏆</div>
-        <div>
-          <div class="hof-name">${winner}</div>
-          <div class="hof-sub">${typeLabel} · ${location} · ${t('hofChampionTeam')}: ${champion}</div>
-          <div class="hof-sub">${t('runnerUpLabel')}: ${runnerUp}</div>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>
-  ${demoBanner()}`;
-}
+        let results = {};
+        let loaded = 0;
+        const TOTAL = 14;
 
-/* =========================================================
-   ============  7. Auth (Google Sign-In)  ====================
-   ========================================================= */
-function initGoogleSignIn(){
-  if(!window.google || !google.accounts){ setTimeout(initGoogleSignIn, 300); return; }
-  google.accounts.id.initialize({
-    client_id: '431204508277-nm33th0fs73s81cpn09ngmmalmbvgso1.apps.googleusercontent.com', // see SETUP.md
-    callback: handleCredentialResponse,
-  });
-  renderAuthArea();
-}
-function handleCredentialResponse(resp){
-  const payload = JSON.parse(atob(resp.credential.split('.')[1]));
-  STATE.user = { email: payload.email, name: payload.name, picture: payload.picture, idToken: resp.credential };
-  localStorage.setItem('md_user', JSON.stringify(STATE.user));
-  renderAuthArea(); loadAllData().then(renderAll);
-}
-function signOut(){ STATE.user = null; localStorage.removeItem('md_user'); renderAuthArea(); loadAllData().then(renderAll); }
-function renderAuthArea(){
-  const wrap = document.getElementById('gsi-btn-wrap');
-  if(STATE.user){
-    wrap.innerHTML = `<div class="user-chip"><img src="${STATE.user.picture||''}" onerror="this.style.display='none'"><span class="name">${STATE.user.name}</span><span class="signout" id="signOutBtn" title="${t('signOut')}">⏻</span></div>`;
-    document.getElementById('signOutBtn').onclick = signOut;
-  } else {
-    wrap.innerHTML = '';
-    if(window.google && google.accounts) google.accounts.id.renderButton(wrap, { theme:'outline', size:'medium', text:'signin' });
-  }
-}
+        function done() {
+            loaded++;
+            if (loaded === TOTAL) render();
+        }
 
-/* =========================================================
-   ============  8. Boot  ======================================
-   ========================================================= */
-document.getElementById('langToggle').onclick = () => {
-  LANG = LANG==='en' ? 'he' : 'en';
-  localStorage.setItem('md_lang', LANG);
-  renderAll();
-};
-document.getElementById('themeToggle').onclick = () => {
-  const html = document.documentElement;
-  const next = html.getAttribute('data-theme')==='light' ? 'dark' : 'light';
-  html.setAttribute('data-theme', next);
-  localStorage.setItem('md_theme', next);
-  document.getElementById('themeToggle').textContent = next==='light' ? '☀️' : '🌙';
-};
-(function boot(){
-  const savedTheme = localStorage.getItem('md_theme') || 'dark';
-  if(savedTheme==='light') document.documentElement.setAttribute('data-theme','light');
-  document.getElementById('themeToggle').textContent = savedTheme==='light' ? '☀️' : '🌙';
-  const savedUser = localStorage.getItem('md_user');
-  if(savedUser) STATE.user = JSON.parse(savedUser);
-  renderShell();
-  document.getElementById('main').innerHTML = `<div class="card"><div class="empty-state"><div class="spinner"></div><br>${t('loading')}</div></div>`;
-  initGoogleSignIn();
-  loadAllData().then(renderAll);
-})();
+        function render() {
+            let html = '';
+
+            html += buildTable(
+                "🏆 4 האחרונות",
+                ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4","ניקוד"],
+                results.final4
+            );
+
+            html += buildTable(
+                "⚽ מלך שערים",
+                ["משתתף","שחקן","ניקוד"],
+                results.scorer
+            );
+
+            const houses = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב'];
+            houses.forEach((h, i) => {
+                html += buildTable(
+                    `🏠 בית ${h}`,
+                    ["משתתף","מקום 1","מקום 2","מקום 3","מקום 4","ניקוד"],
+                    results[`house${i}`]
+                );
+            });
+
+            container.innerHTML = html;
+        }
+
+        window.cb1 = r => { results.final4 = r; done(); };
+        fetchRange("A182:F207","cb1");
+
+        window.cb2 = r => { results.scorer = r; done(); };
+        fetchRange("I182:K207","cb2");
+
+        const ranges = [
+            "A2:F27","H2:M27",
+            "A32:F57","H32:M57",
+            "A62:F87","H62:M87",
+            "A92:F117","H92:M117",
+            "A122:F147","H122:M147",
+            "A152:F177","H152:M177"
+        ];
+
+        ranges.forEach((range, i) => {
+            const cb = `cb_house_${i}`;
+            window[cb] = r => {
+                results[`house${i}`] = r;
+                done();
+            };
+            fetchRange(range, cb);
+        });
+    }
 </script>
 </body>
 </html>
